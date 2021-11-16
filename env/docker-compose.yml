@@ -1,0 +1,30 @@
+version: "3.9"
+services:
+  music_rating_server:
+    container_name: music_rating_server
+    build:
+      context: .
+      dockerfile: server.Dockerfile
+    image: php:7.4-apache
+    depends_on:
+      - music_rating_db
+    volumes:
+      - ../server:/var/www/html
+      - /demo.apache.conf:/etc/apache2/sites-enabled/demo.conf
+      # - ./Config.php:/var/www/html/src/config/Config.php
+    ports:
+      - 8000:80
+  music_rating_db:
+    container_name: music_rating_db
+    build:
+      context: .
+    image: mysql
+    restart: always
+    environment:
+      MYSQL_USER: aloeffler
+      MYSQL_PASSWORD: 123#@!
+      MYSQL_ROOT_PASSWORD: 123#@!
+    ports:
+      - "9906:3306"
+    volumes: 
+      - ./dump.sql:/docker-entrypoint-initdb.d/dump.sql
