@@ -12,7 +12,7 @@ include_once dirname(__DIR__, 1) . '/src/autoload.php';
 $app = new BaseController();
 
 $app->get('/', function ($req, $res, $params) {
-    echo 'hello worldzito';
+    echo "<h5>Bem vindo ao backend do music rating app</h5>";
 });
 
 $app->dispatch();
