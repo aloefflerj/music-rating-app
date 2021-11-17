@@ -20,11 +20,34 @@ class UsersModel
      */
     public function getAllUsers() {
 
-        $users = $this->pdo->query('SELECT * FROM users');
+        $query = $this->pdo->prepare('SELECT * FROM users');
+        $query->execute();
 
-        foreach($users as $user) {
-            echo "User: {$user->username}, Id: {$user->id}, Type: {$user->type} <br>";
+        $users = $query->fetchAll();
+
+        return $users;
+
+    }
+
+    public function newUser($username, $mail, $passwd, $user_type) {
+
+        $params = [
+            'username' => $username,
+            'mail' => $mail,
+            'passwd' => $passwd,
+            'user_type' => $user_type
+        ];
+        
+        $query = $this->pdo->prepare(
+            "INSERT INTO users (username, mail, passwd, user_type) VALUES (:username, :mail, :passwd, :user_type)"
+        );
+
+        try {
+            $query->execute($params);
+        } catch (\Exception $e) {
+            throw $e;
         }
 
+        return $this->getAllUsers();
     }
 }

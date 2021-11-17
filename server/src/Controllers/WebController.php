@@ -14,12 +14,6 @@ class WebController
      */
     public static $users;
 
-    public function __construct() {
-        
-        /** @var $this->users */
-        self::$users = new UsersModel();
-    }
-
     public static function home()
     {
         return function($req, $res, $params) {
@@ -27,10 +21,4 @@ class WebController
         };
     }
 
-    public static function users() 
-    {
-        return function($req, $res, $body) {
-            (new UsersModel)->getAllUsers();
-        };
-    }
 }

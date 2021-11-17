@@ -13,7 +13,6 @@ trait DBConnection
         $dsn = "mysql:dbname={$db};host={$host};port=3306";
         $options = [
             \PDO::ATTR_ERRMODE            => \PDO::ERRMODE_EXCEPTION,
-            // \PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC,
             \PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_OBJ,
             \PDO::ATTR_CASE => \PDO::CASE_NATURAL,
             \PDO::ATTR_EMULATE_PREPARES   => false,

@@ -12,7 +12,7 @@ CREATE TABLE `users` (
   `username` varchar(40) NOT NULL,
   `mail` varchar(70) NOT NULL,
   `passwd` char(255) NULL DEFAULT NULL,
-  `type` varchar(20) NOT NULL,
+  `user_type` varchar(20) NOT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
@@ -21,7 +21,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` (`id`, `username`, `mail`, `passwd`, `type`) VALUES 
+INSERT INTO `users` (`id`, `username`, `mail`, `passwd`, `user_type`) VALUES 
   (1, 'manager', 'manager@rating-songs.com', '123', 'adm'),
   (2, 'regular_user', 'regular_user@rating-songs.com', '123', 'regular');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
