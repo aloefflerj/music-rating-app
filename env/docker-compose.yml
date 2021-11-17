@@ -12,12 +12,15 @@ services:
       - ../server:/var/www/html
       - /demo.apache.conf:/etc/apache2/sites-enabled/demo.conf
       # - ./Config.php:/var/www/html/src/config/Config.php
+    networks:
+      - music_rating_network
     ports:
       - 8000:80
   music_rating_db:
     container_name: music_rating_db
     build:
       context: .
+      dockerfile: mysql.Dockerfile
     image: mysql
     restart: always
     environment:
@@ -25,6 +28,11 @@ services:
       MYSQL_PASSWORD: 123#@!
       MYSQL_ROOT_PASSWORD: 123#@!
     ports:
-      - "9906:3306"
+      - "3306:3306"
     volumes: 
       - ./dump.sql:/docker-entrypoint-initdb.d/dump.sql
+    networks:
+      - music_rating_network
+networks:
+    music_rating_network:
+        driver: bridge

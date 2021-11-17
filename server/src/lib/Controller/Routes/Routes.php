@@ -73,6 +73,20 @@ class Routes
         return $this;
     }
 
+    public function put(string $uri, \closure $output, ?array $functionParams)
+    {
+        self::$current = new Put($uri, $output, $functionParams);
+
+        return $this;
+    }
+
+    public function delete(string $uri, \closure $output, ?array $functionParams)
+    {
+        self::$current = new Delete($uri, $output, $functionParams);
+
+        return $this;
+    }
+
     public function getCurrent($currentUri)
     {
         $currentRoute = null;
