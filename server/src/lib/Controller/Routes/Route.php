@@ -1,8 +1,8 @@
 <?php
 
-namespace MusicRating\Controller\Routes;
+namespace MusicRating\lib\Controller\Routes;
 
-use MusicRating\Controller\Url\UrlHandler;
+use MusicRating\lib\Controller\Url\UrlHandler;
 
 class Route
 {

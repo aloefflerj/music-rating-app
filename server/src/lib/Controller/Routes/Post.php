@@ -1,6 +1,6 @@
 <?php
 
-namespace MusicRating\Controller\Routes;
+namespace MusicRating\lib\Controller\Routes;
 
 class Post extends Route
 {

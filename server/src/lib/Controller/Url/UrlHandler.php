@@ -1,9 +1,9 @@
 <?php
 
-namespace MusicRating\Controller\Url;
+namespace MusicRating\lib\Controller\Url;
 
-use MusicRating\Controller\Helpers\StringHelper;
-use MusicRating\Controller\Helpers\UrlHelper;
+use MusicRating\lib\Controller\Helpers\StringHelper;
+use MusicRating\lib\Controller\Helpers\UrlHelper;
 use stdClass;
 
 class UrlHandler

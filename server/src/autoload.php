@@ -4,7 +4,7 @@ function autoload($class){
 
     $prefix = 'MusicRating\\';
 
-    $baseDir = __DIR__ . '/lib/';
+    $baseDir = __DIR__ . '/';
 
     $len = strlen($prefix);
 

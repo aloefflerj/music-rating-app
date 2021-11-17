@@ -8,11 +8,11 @@ albums($id, title)
 
 artists($id, name)
 
-artists_songs($id, #artists, #songs)
+artists_songs($id, #artist, #song)
 
-artists_albums($id, #artists, #albums)
+artists_albums($id, #artist, #album)
 
-albums_songs($id, #albums, #songs)
+albums_songs($id, #album, #song)
 
 starred_songs($id, stars, #song, #user)
 

@@ -1,11 +1,11 @@
 <?php
 
-namespace MusicRating\Controller;
+namespace MusicRating\lib\Controller;
 
-use MusicRating\Controller\Helpers\StringHelper;
-use MusicRating\Controller\Helpers\UrlHelper;
-use MusicRating\Controller\Routes\Routes;
-use MusicRating\Controller\Url\UrlHandler;
+use MusicRating\lib\Controller\Helpers\StringHelper;
+use MusicRating\lib\Controller\Helpers\UrlHelper;
+use MusicRating\lib\Controller\Routes\Routes;
+use MusicRating\lib\Controller\Url\UrlHandler;
 
 class BaseController
 // class BaseController implements ControllerInterface

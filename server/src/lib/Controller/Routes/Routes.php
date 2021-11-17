@@ -1,8 +1,9 @@
 <?php
 
-namespace MusicRating\Controller\Routes;
+namespace MusicRating\lib\Controller\Routes;
 
-use MusicRating\Controller\Helpers\UrlHelper;
+use Exception;
+use MusicRating\lib\Controller\Helpers\UrlHelper;
 
 class Routes
 {
@@ -85,8 +86,14 @@ class Routes
             case 'post':
                 $currentRoute = (Post::getRoute($currentUri, $this->routes, $requestMethod));
                 break;
+            case 'put':
+                $currentRoute = (Put::getRoute($currentUri, $this->routes, $requestMethod));
+                break;
+            case 'delete':
+                $currentRoute = (Delete::getRoute($currentUri, $this->routes, $requestMethod));
+                break;
             default:
-                echo "not get";
+                throw new Exception("Method not allowed", 405);
                 break;
         }
 

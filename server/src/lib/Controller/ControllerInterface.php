@@ -1,6 +1,6 @@
 <?php
 
-namespace MusicRating\Controller;
+namespace MusicRating\lib\Controller;
 
 interface ControllerInterface
 {

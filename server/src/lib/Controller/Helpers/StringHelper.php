@@ -1,6 +1,6 @@
 <?php
 
-namespace MusicRating\Controller\Helpers;
+namespace MusicRating\lib\Controller\Helpers;
 
 trait StringHelper
 {
