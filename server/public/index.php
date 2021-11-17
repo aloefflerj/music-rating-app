@@ -15,6 +15,10 @@ $app->get('/', function ($req, $res, $params) {
     echo "<h5>Bem vindo ao backend do music rating app</h5>";
 });
 
+$app->get('/v1/users', function ($req, $res, $params) {
+    echo 'all users';
+});
+
 $app->dispatch();
 
 if ($app->error()) {
