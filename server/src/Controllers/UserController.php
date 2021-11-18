@@ -23,9 +23,14 @@ class UserController
     public static function getAll()
     {
         return function ($req, $res, $body) {
-            $users = self::$users->getAllUsers();
+            $users = self::$users->getAll();
 
-            echo json_encode($users);
+            if (self::$users->error()) {
+                self::printError();
+                return;
+            }
+
+            echo json_encode($users, JSON_PRETTY_PRINT);
         };
     }
 
@@ -34,41 +39,57 @@ class UserController
         return function ($req, $res, $params) {
             $user = self::$users->get($params->id);
 
-            echo json_encode($user);
+            if (self::$users->error()) {
+                self::printError();
+                return;
+            }
+
+            echo json_encode($user, JSON_PRETTY_PRINT);
         };
     }
 
-    public static function newUser()
+    public static function new()
     {
         return function ($req, $res, $body) {
 
             $body = json_decode($body);
 
-            $users = self::$users->newUser(
+            $users = self::$users->new(
                 $body->username ?? null,
                 $body->mail ?? null,
                 $body->passwd ?? null,
                 $body->user_type ?? null
             );
 
-            if(self::$users->error()) {
-                
-                echo json_encode([
-                    "success" => false,
-                    "msg" => self::$users->error()->getMessage()
-                ]);
-
+            if (self::$users->error()) {
+                self::printError();
                 return;
             }
 
-            echo json_encode($users);
+            echo json_encode($users, JSON_PRETTY_PRINT);
         };
     }
 
-    // errors ------------------------------->
+    public static function delete()
+    {
+        return function ($req, $res, $body, $param) {
 
-    private static function checkEmptyBodyParams($body) {
+            $users = self::$users->delete($param->id);
 
+            if (self::$users->error()) {
+                self::printError();
+                return;
+            }
+
+            echo json_encode($users, JSON_PRETTY_PRINT);
+        };
     }
-    
+
+    private static function printError()
+    {
+        echo json_encode([
+            'success' => false,
+            'msg' => self::$users->error()->getMessage()
+        ], JSON_PRETTY_PRINT);
+    }
 }

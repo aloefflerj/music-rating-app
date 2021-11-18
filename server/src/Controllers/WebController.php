@@ -17,7 +17,7 @@ class WebController
     public static function home()
     {
         return function($req, $res, $params) {
-            echo 'home';
+            echo json_encode('welcome', JSON_PRETTY_PRINT);
         };
     }
 

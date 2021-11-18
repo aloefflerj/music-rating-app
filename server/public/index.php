@@ -24,33 +24,16 @@ $app->get('/', WebController::home());
 // users group -------------->
 UserController::init();
 
-// $app->get('/v1/users', UserController::getAll());
+$app->get('/v1/users', UserController::getAll());
 
-// $app->post('/v1/users', UserController::newUser());
+$app->post('/v1/users', UserController::new());
 $app->get('/v1/users/{id}', UserController::get());
-// $app->get('/v1/users/{id}', function($req, $res, $params) {
-//     echo $params->id;
-// });
+$app->delete('/v1/users/{id}', UserController::delete());
 
 
 $app->get('/test/{id}', function ($req, $res, $params) {
-    // var_dump(UserController::getAll());
     echo $params->id;
 });
-
-// $app->post('/', function($req, $res, $body, $params) {
-//     $body = json_decode($body);
-
-//     echo $body->key;
-// });
-
-// $app->put('/', function($req, $res, $body) {
-//     echo 'put home';
-// });
-
-// $app->delete('/', function($req, $res, $body) {
-//     echo "$body";
-// });
 
 $app->dispatch();
 

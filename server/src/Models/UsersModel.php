@@ -11,24 +11,24 @@ class UsersModel
     private $pdo;
 
     private $error;
-    
+
     public function __construct()
     {
         $this->pdo = $this->conn('music_rating_app', 'music_rating_db', 'root', '123#@!');
     }
-    
+
     /**
      * Retorna todos os usuários do banco
      *
      * @return stdClass[] | null
      */
-    public function getAllUsers(): ?array
+    public function getAll(): ?array
     {
         $query = $this->pdo->prepare('SELECT * FROM users');
 
         try {
             $query->execute();
-        }catch(\Exception $e) {
+        } catch (\Exception $e) {
             $this->error = $e;
         }
 
@@ -61,20 +61,20 @@ class UsersModel
      * @param string|null $user_type
      * @return stdClass[]|null
      */
-    public function newUser(?string $username, ?string $mail, ?string $passwd, ?string $user_type): ?array
+    public function new(?string $username, ?string $mail, ?string $passwd, ?string $user_type): ?array
     {
         $validatedPasswd = $this->validatePasswd($passwd);
         if (!$validatedPasswd) {
             return null;
         }
-        
-        $validateUsername = $this->validateUsername($username);
-        if (!$validateUsername) {
+
+        $validatedUsername = $this->validateUsername($username);
+        if (!$validatedUsername) {
             return null;
         }
 
         $validatedMail = $this->validateMail($mail);
-        if(!$validatedMail) {
+        if (!$validatedMail) {
             return null;
         }
 
@@ -97,7 +97,41 @@ class UsersModel
         }
 
 
-        return $this->getAllUsers();
+        return $this->getAll();
+    }
+
+    public function delete ($id)
+    {
+        $users = $this->getAll();
+
+        // user not found ------->
+        $found = false;
+        foreach ($users as $user) {
+            if($user->id === $id) {
+                $found = true;
+            }
+        }
+
+        if (!$found) {
+            $this->error = new \Exception('Este usuário não existe');
+        }
+
+        $validatedId = $this->validateId($id);
+        if(!$validatedId) {
+            return null;
+        }
+
+        $query = $this->pdo->prepare(
+            "DELETE FROM users WHERE id = :id"
+        );
+
+        try {
+            $query->execute(['id' => $id]);
+        } catch (\Exception $e) {
+            $this->error = $e;
+        }
+
+        return $this->getAll();
     }
 
     /*
@@ -105,6 +139,17 @@ class UsersModel
      * || FIELD VALIDATIONS || =====================================>
      * =======================
      */
+
+    // id
+    private function validateId(&$id)
+    {
+        if (empty($id) || !filter_var($id, FILTER_VALIDATE_INT)) {
+            $this->error = new \Exception('Insira uma id válido');
+            return false;
+        }
+
+        return true;
+    }
 
     // password ---------------------------------------------->
     private function validatePasswd(?string &$passwd)
@@ -133,7 +178,7 @@ class UsersModel
             return false;
         }
 
-        $users = $this->getAllUsers();
+        $users = $this->getAll();
 
         foreach ($users as $user) {
             if ($user->username === $username) {
@@ -148,20 +193,20 @@ class UsersModel
     // mail
     private function validateMail(?string &$mail)
     {
-        if(empty($mail)) {
+        if (empty($mail)) {
             $this->error = new \Exception('Insira um email');
             return false;
         }
 
         if (!preg_match(
-            '/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/', 
+            '/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/',
             $mail
-            )) {
+        )) {
             $this->error = new \Exception('Insira um email válido');
             return false;
         }
-        
-        $users = $this->getAllUsers();
+
+        $users = $this->getAll();
 
         foreach ($users as $user) {
             if ($user->mail === $mail) {
