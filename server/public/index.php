@@ -16,15 +16,21 @@ $app = new BaseController();
 
 APIMiddleware::apply();
 
-//WEB --------------------------------------------------->
+// WEB --------------------------------------------------->
 $app->get('/', WebController::home());
 
-//API --------------------------------------------------->
+// API --------------------------------------------------->
+
+// users group -------------->
+UserController::init();
+
 $app->get('/v1/users', UserController::getAll());
 
 $app->post('/v1/users', UserController::newUser());
 
-
+$app->get('/test', function ($req, $res, $body) {
+    var_dump(UserController::getAll());
+});
 
 // $app->post('/', function($req, $res, $body, $params) {
 //     $body = json_decode($body);

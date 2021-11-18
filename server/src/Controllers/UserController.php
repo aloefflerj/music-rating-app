@@ -14,34 +14,51 @@ class UserController
      */
     public static $users;
 
-    public function __construct() {
-        
+    public static function init()
+    {
         /** @var $this->users */
         self::$users = new UsersModel();
     }
 
-    public static function getAll() 
+    public static function getAll()
     {
-        return function($req, $res, $body) {
-            $users = (new UsersModel())->getAllUsers();
+        return function ($req, $res, $body) {
+            $users = self::$users->getAllUsers();
 
             echo json_encode($users);
         };
     }
 
-    public static function newUser() {
-        return function($req, $res, $body) {
+    public static function newUser()
+    {
+        return function ($req, $res, $body) {
 
             $body = json_decode($body);
-            
-            $users = (new UsersModel())->newUser(
-                $body->username,
-                $body->mail,
-                $body->passwd,
-                $body->user_type
+
+            $users = self::$users->newUser(
+                $body->username ?? null,
+                $body->mail ?? null,
+                $body->passwd ?? null,
+                $body->user_type ?? null
             );
+
+            if(self::$users->error()) {
+                echo json_encode([
+                    "success" => false,
+                    "msg" => self::$users->error()->getMessage()
+                ]);
+
+                return;
+            }
 
             echo json_encode($users);
         };
     }
+
+    // errors ------------------------------->
+
+    private static function checkEmptyBodyParams($body) {
+
+    }
+    
 }

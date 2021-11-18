@@ -11,7 +11,7 @@ CREATE TABLE `users` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `username` varchar(40) NOT NULL,
   `mail` varchar(70) NOT NULL,
-  `passwd` char(255) NULL DEFAULT NULL,
+  `passwd` char(255) NOT NULL,
   `user_type` varchar(20) NOT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
