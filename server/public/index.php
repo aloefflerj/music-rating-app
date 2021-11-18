@@ -24,12 +24,18 @@ $app->get('/', WebController::home());
 // users group -------------->
 UserController::init();
 
-$app->get('/v1/users', UserController::getAll());
+// $app->get('/v1/users', UserController::getAll());
 
-$app->post('/v1/users', UserController::newUser());
+// $app->post('/v1/users', UserController::newUser());
+$app->get('/v1/users/{id}', UserController::get());
+// $app->get('/v1/users/{id}', function($req, $res, $params) {
+//     echo $params->id;
+// });
 
-$app->get('/test', function ($req, $res, $body) {
-    var_dump(UserController::getAll());
+
+$app->get('/test/{id}', function ($req, $res, $params) {
+    // var_dump(UserController::getAll());
+    echo $params->id;
 });
 
 // $app->post('/', function($req, $res, $body, $params) {

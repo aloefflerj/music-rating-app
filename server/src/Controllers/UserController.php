@@ -29,6 +29,15 @@ class UserController
         };
     }
 
+    public static function get()
+    {
+        return function ($req, $res, $params) {
+            $user = self::$users->get($params->id);
+
+            echo json_encode($user);
+        };
+    }
+
     public static function newUser()
     {
         return function ($req, $res, $body) {
@@ -43,6 +52,7 @@ class UserController
             );
 
             if(self::$users->error()) {
+                
                 echo json_encode([
                     "success" => false,
                     "msg" => self::$users->error()->getMessage()
