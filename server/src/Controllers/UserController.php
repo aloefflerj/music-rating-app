@@ -85,6 +85,23 @@ class UserController
         };
     }
 
+    public static function update() 
+    {
+        return function ($req, $res, $body, $param) {
+
+            $body = json_decode($body);
+
+            $user = self::$users->update($param->id, $body);
+
+            if (self::$users->error()) {
+                self::printError();
+                return;
+            }
+
+            echo json_encode($user, JSON_PRETTY_PRINT);
+        };
+    }
+
     private static function printError()
     {
         echo json_encode([

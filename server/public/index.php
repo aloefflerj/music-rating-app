@@ -29,6 +29,7 @@ $app->get('/v1/users', UserController::getAll());
 $app->post('/v1/users', UserController::new());
 $app->get('/v1/users/{id}', UserController::get());
 $app->delete('/v1/users/{id}', UserController::delete());
+$app->put('/v1/users/{id}', UserController::update());
 
 
 $app->get('/test/{id}', function ($req, $res, $params) {

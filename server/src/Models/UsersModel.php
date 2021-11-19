@@ -49,6 +49,10 @@ class UsersModel
 
         $user = $query->fetch();
 
+        if(!$user) {
+            $this->error = new \Exception("O usuário procurado não existe");
+        }
+
         return $user;
     }
 
@@ -100,24 +104,25 @@ class UsersModel
         return $this->getAll();
     }
 
-    public function delete ($id)
+    public function delete($id)
     {
+        $validatedId = $this->validateId($id);
+        if (!$validatedId) {
+            return null;
+        }
+
         $users = $this->getAll();
 
         // user not found ------->
         $found = false;
         foreach ($users as $user) {
-            if($user->id === $id) {
+            if ($user->id === (int)$id) {
                 $found = true;
             }
         }
 
         if (!$found) {
             $this->error = new \Exception('Este usuário não existe');
-        }
-
-        $validatedId = $this->validateId($id);
-        if(!$validatedId) {
             return null;
         }
 
@@ -132,6 +137,87 @@ class UsersModel
         }
 
         return $this->getAll();
+    }
+
+    public function update($id, \stdClass $body)
+    {
+        $id = (int)$id;
+
+        $validatedId = $this->validateId($id);
+        if (!$validatedId) {
+            return null;
+        }
+
+        if(empty($body)) {
+            $this->error = new \Exception('Insira um valor para alterar');
+            return null;
+        }
+
+
+        $users = $this->getAll();
+        $user = $this->get($id);
+        
+        if (!in_array($user, $users)) {
+            $this->error = new \Exception('Este usuário não existe');
+            return null;
+        };
+        
+        if (isset($body->username)) {
+            $validatedUsername = $this->validateUsername($body->username, $user);
+            if (!$validatedUsername) {
+                return null;
+            }
+        }
+
+        if (isset($body->mail)) {
+            $validatedMail = $this->validateMail($body->mail, $user);
+            if (!$validatedMail) {
+                return null;
+            }
+        }
+
+        if (isset($body->passwd)) {
+            $validatedPasswd = $this->validatePasswd($body->passwd);
+            if (!$validatedPasswd) {
+                return null;
+            }
+        }
+
+        if (isset($body->user_type)) {
+            $validatedUserType = $this->validateUserType($body->user_type);
+            if (!$validatedUserType) {
+                return null;
+            }
+        }
+
+        $bodyVars = get_object_vars($body);
+        $bodyVarKeys = array_keys($bodyVars);
+        $bodyVarValues = array_values($bodyVars);
+        
+        $sqlSet = '';
+
+        foreach($bodyVarKeys as $bodyVarKey) {
+            $sqlSet .= "{$bodyVarKey} = :{$bodyVarKey}, ";
+        }
+        $sqlSet = rtrim($sqlSet, ", ");
+
+        $bodyArr = array_combine($bodyVarKeys, $bodyVarValues);
+        $bodyArr['id'] = $id;
+
+        $sql = "UPDATE users SET {$sqlSet} WHERE id = :id";
+
+        // var_dump($sql);
+        // die();
+        
+        $sql = $this->pdo->prepare($sql);
+
+        try {
+            $sql->execute($bodyArr);
+        } catch(\Exception $e) {
+            $this->error = $e;
+        }
+
+        return $this->get($id);
     }
 
     /*
@@ -170,7 +256,7 @@ class UsersModel
     }
 
     // username
-    private function validateUsername(?string &$username)
+    private function validateUsername(?string &$username, $currentUser = null)
     {
 
         if (empty($username)) {
@@ -182,6 +268,9 @@ class UsersModel
 
         foreach ($users as $user) {
             if ($user->username === $username) {
+                if($currentUser && $currentUser->username === $username) {
+                    break;
+                }
                 $this->error = new \Exception('Este nome de usuário já está sendo usado');
                 return false;
             }
@@ -191,17 +280,17 @@ class UsersModel
     }
 
     // mail
-    private function validateMail(?string &$mail)
+    private function validateMail(?string &$mail, $currentUser = null)
     {
+
         if (empty($mail)) {
             $this->error = new \Exception('Insira um email');
             return false;
         }
 
-        if (!preg_match(
-            '/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/',
-            $mail
-        )) {
+        $mail = filter_var($mail, FILTER_VALIDATE_EMAIL);
+
+        if (!$mail) {
             $this->error = new \Exception('Insira um email válido');
             return false;
         }
@@ -210,9 +299,24 @@ class UsersModel
 
         foreach ($users as $user) {
             if ($user->mail === $mail) {
+                if($currentUser && $currentUser->mail === $mail) {
+                    break;
+                }
                 $this->error = new \Exception('Este email já está cadastrado em nosso sitema');
                 return false;
             }
+        }
+
+        return true;
+    }
+
+    private function validateUserType(?string &$user_type)
+    {
+        $user_type = filter_var($user_type, FILTER_SANITIZE_STRIPPED);
+
+        if ($user_type !== 'regular' &&  $user_type !== 'adm') {
+            $this->error = new \Exception('Essa permissão de usuário não existe');
+            return false;
         }
 
         return true;
