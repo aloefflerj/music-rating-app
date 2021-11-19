@@ -17,15 +17,14 @@ $app = new BaseController();
 APIMiddleware::apply();
 
 // WEB --------------------------------------------------->
+WebController::init();
 $app->get('/', WebController::home());
 
 // API --------------------------------------------------->
 
 // users group -------------->
 UserController::init();
-
 $app->get('/v1/users', UserController::getAll());
-
 $app->post('/v1/users', UserController::new());
 $app->get('/v1/users/{id}', UserController::get());
 $app->delete('/v1/users/{id}', UserController::delete());
