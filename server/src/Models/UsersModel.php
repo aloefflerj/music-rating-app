@@ -205,9 +205,6 @@ class UsersModel
         $bodyArr['id'] = $id;
 
         $sql = "UPDATE users SET {$sqlSet} WHERE id = :id";
-
-        // var_dump($sql);
-        // die();
         
         $sql = $this->pdo->prepare($sql);
 

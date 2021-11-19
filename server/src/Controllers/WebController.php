@@ -26,7 +26,7 @@ class WebController
     
     public static function home()
     {
-        header('Content-Type: text/html');
+        // header('Content-Type: text/html');
         return function($req, $res, $params) {
 
             $cURLConnection = curl_init();
