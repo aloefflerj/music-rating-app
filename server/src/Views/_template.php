@@ -11,8 +11,11 @@
     <main>
         {{ @content }}
     </main>
+    <aside>
+        {{ @folder->_sidebar }}
+    </aside>
     <footer>
-        {{ footer }}
+        {{ @folder->_footer }}
     </footer>
 </body>
 </html>

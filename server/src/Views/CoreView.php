@@ -39,6 +39,37 @@ class CoreView
 
         $section = file_get_contents("{$this->mainFolder}/{$sectionFileName}.{$this->fileBaseExtension}");
         $this->template = str_replace("{{ @content }}", $section, $this->template);
+                    
+        if(substr_count($this->template, "@folder->") > 0) {
 
+            $templateArr = explode("{{ @folder", $this->template);
+    
+            foreach($templateArr as $elementString) {
+                 $folderSectionElements[] = $this->getStringBetween($elementString, "->", " }}");
+            }
+    
+            array_shift($folderSectionElements);
+            
+            foreach($folderSectionElements as $folderSectionElement) {
+                $folderFiles[] = file_get_contents("{$this->mainFolder}/{$folderSectionElement}.{$this->fileBaseExtension}");
+            }
+
+            foreach($folderFiles as $key => $value) {
+                $this->template = str_replace("{{ @folder->{$folderSectionElements[$key]} }}", $value, $this->template);
+            }
+        }
+
+
+    }
+
+    private function getStringBetween($string, $start, $end){
+        
+        $string = ' ' . $string;
+        $ini = strpos($string, $start);
+        if ($ini == 0) return '';
+        $ini += strlen($start);
+        $len = strpos($string, $end, $ini) - $ini;
+
+        return substr($string, $ini, $len);
     }
 }
