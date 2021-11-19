@@ -1,2 +1,2 @@
-<h3>funcionou afú</h3>
-<p>greeting = {{ greeting }}</p>
+<h3>Users</h3>
+<p>{{ users }}</p>

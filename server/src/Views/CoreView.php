@@ -23,14 +23,19 @@ class CoreView
         $this->setSectionInTemplate($section);
 
         if($variables) {
-            $this->setValuesInHtml($section, $variables);
+            $this->setValuesInHtml($variables);
         }
         
         return $this->template;
     }
 
-    private function setValuesInHtml(string $section, array $variables) {
+    private function setValuesInHtml(array $variables) {
         foreach($variables as $key => $value) {
+            if(is_array($value)) {
+                echo 'fudeu';    
+                continue;
+            }
+
             $this->template =  str_replace("{{ {$key} }}", $value, $this->template);
         }
     }
