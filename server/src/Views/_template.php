@@ -9,7 +9,7 @@
 <body>
     <h1>Welcome</h1>
     <main>
-        {{ section->home }}
+        {{ @content }}
     </main>
     <footer>
         {{ footer }}

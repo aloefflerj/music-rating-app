@@ -38,7 +38,7 @@ class CoreView
     private function setSectionInTemplate(string $sectionFileName) {
 
         $section = file_get_contents("{$this->mainFolder}/{$sectionFileName}.{$this->fileBaseExtension}");
-        $this->template = str_replace("{{ section->{$sectionFileName} }}", $section, $this->template);
+        $this->template = str_replace("{{ @content }}", $section, $this->template);
 
     }
 }
