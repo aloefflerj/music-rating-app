@@ -11,6 +11,7 @@ class RelationshipsModel extends BaseModel
     private $pdo;
     private SongsModel $songs;
     private AlbumsModel $albums;
+    private ArtistsModel $artists;
 
     public function __construct()
     {
@@ -21,12 +22,21 @@ class RelationshipsModel extends BaseModel
 
         /** @var AlbumsModel */
         $this->albums = new AlbumsModel();
+
+        /** @var ArtistsModel */
+        $this->artists = new ArtistsModel();
     }
 
     public function getAllSongsFromAlbum($albumId)
     {
         $validatedId = $this->validateId($albumId);
         if(!$validatedId) {
+            return null;
+        }
+
+        $album = $this->albums->get($albumId);
+        if(!$album) {
+            $this->error = $this->albums->error();
             return null;
         }
         
@@ -40,6 +50,38 @@ class RelationshipsModel extends BaseModel
         
         try {
             $query->execute(['albumId' => $albumId]);
+        } catch (\Exception $e) {
+            $this->error = $e;
+        }
+        
+        $songs = $query->fetchAll();
+        
+        return $songs;
+    }
+
+    public function getAllSongsFromArtist($artistId)
+    {
+        $validatedId = $this->validateId($artistId);
+        if(!$validatedId) {
+            return null;
+        }
+
+        $artist = $this->artists->get($artistId);
+        if(!$artist) {
+            $this->error = $this->artists->error();
+            return null;
+        }
+        
+        $query = $this->pdo->prepare(
+            'SELECT s.id, s.title, s.song_order, s.created_at, s.updated_at FROM songs s
+            INNER JOIN artists_songs a_s ON a_s.songs = s.id 
+            INNER JOIN artists ar ON ar.id = a_s.artists 
+            WHERE ar.id = :artistId
+            ORDER BY s.song_order'
+        );
+        
+        try {
+            $query->execute(['artistId' => $artistId]);
         } catch (\Exception $e) {
             $this->error = $e;
         }

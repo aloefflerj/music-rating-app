@@ -23,7 +23,21 @@ class RelationshipController
     public static function getAllSongsFromAlbum()
     {
         return function ($req, $res, $param) {
-            $songs = self::$relationships->getAllSongsFromAlbum($param->album);
+            $songs = self::$relationships->getAllSongsFromAlbum($param->id);
+
+            if (self::$relationships->error()) {
+                self::printError();
+                return;
+            }
+
+            echo json_encode($songs, JSON_PRETTY_PRINT);
+        };
+    }
+
+    public static function getAllSongsFromArtist()
+    {
+        return function ($req, $res, $param) {
+            $songs = self::$relationships->getAllSongsFromArtist($param->id);
 
             if (self::$relationships->error()) {
                 self::printError();
