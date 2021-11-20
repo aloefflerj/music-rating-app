@@ -33,9 +33,9 @@ class SongsModel extends BaseModel
             $this->error = $e;
         }
 
-        $users = $query->fetchAll();
+        $songs = $query->fetchAll();
 
-        return $users;
+        return $songs;
     }
 
     public function get(int $id)
@@ -48,22 +48,20 @@ class SongsModel extends BaseModel
             $this->error = $e;
         }
 
-        $user = $query->fetch();
+        $song = $query->fetch();
 
-        if (!$user) {
+        if (!$song) {
             $this->error = new \Exception("A música que você procura não existe");
         }
 
-        return $user;
+        return $song;
     }
 
     /**
-     * Cria um novo usuário
+     * Cria uma nova música
      *
-     * @param string|null $username
-     * @param string|null $mail
-     * @param string|null $passwd
-     * @param string|null $user_type
+     * @param string|null $title
+     * @param int|null $song_order
      * @return stdClass[]|null
      */
     public function new(?string $title, ?int $song_order): ?array
@@ -109,23 +107,23 @@ class SongsModel extends BaseModel
             return null;
         }
 
-        $users = $this->getAll();
+        $songs = $this->getAll();
 
-        // user not found ------->
+        // song not found ------->
         $found = false;
-        foreach ($users as $user) {
-            if ($user->id === (int)$id) {
+        foreach ($songs as $song) {
+            if ($song->id === (int)$id) {
                 $found = true;
             }
         }
 
         if (!$found) {
-            $this->error = new \Exception('Este usuário não existe');
+            $this->error = new \Exception('Esta música não existe');
             return null;
         }
 
         $query = $this->pdo->prepare(
-            "DELETE FROM users WHERE id = :id"
+            "DELETE FROM songs WHERE id = :id"
         );
 
         try {
@@ -152,13 +150,27 @@ class SongsModel extends BaseModel
         }
 
 
-        $users = $this->getAll();
-        $user = $this->get($id);
+        $songs = $this->getAll();
+        $song = $this->get($id);
 
-        if (!in_array($user, $users)) {
+        if (!in_array($song, $songs)) {
             $this->error = new \Exception('Este usuário não existe');
             return null;
         };
+
+        if (isset($body->title)) {
+            $validatedTitle = $this->validateTitle($body->title, $song);
+            if (!$validatedTitle) {
+                return null;
+            }
+        }
+
+        if (isset($body->song_order)) {
+            $validatedSongOrder = $this->validateSongOrder($body->song_order, $song);
+            if (!$validatedSongOrder) {
+                return null;
+            }
+        }
 
         $bodyVars = get_object_vars($body);
         $bodyVarKeys = array_keys($bodyVars);
@@ -174,7 +186,7 @@ class SongsModel extends BaseModel
         $bodyArr = array_combine($bodyVarKeys, $bodyVarValues);
         $bodyArr['id'] = $id;
 
-        $sql = "UPDATE users SET {$sqlSet} WHERE id = :id";
+        $sql = "UPDATE songs SET {$sqlSet} WHERE id = :id";
 
         $sql = $this->pdo->prepare($sql);
 
@@ -193,7 +205,7 @@ class SongsModel extends BaseModel
      * =============
      */
 
-    private function validateTitle($title)
+    private function validateTitle($title, $currentSong = null)
     {
         if (empty($title)) {
             $this->error = new \Exception('Insira um título para a música');
@@ -203,6 +215,9 @@ class SongsModel extends BaseModel
         $songs = $this->getAll();
 
         foreach ($songs as $song) {
+            if($currentSong && $currentSong->title === $title) {
+                break;
+            }
             if ($song->title === $title) {
                 $this->error = new \Exception('Esta música já foi cadastrada');
                 return false;
@@ -212,16 +227,25 @@ class SongsModel extends BaseModel
         return true;
     }
 
-    private function validateSongOrder($song_order)
+    private function validateSongOrder($song_order, $currentSongOrder = null)
     {
         if (empty($song_order)) {
             $this->error = new \Exception('Insira número da música no álbum');
             return false;
         }
 
-        // Fazer a validação de album aqui
+        // Validar se o valor repetido não é da própria música
+
+        // Fazer a validação de album aqui 
+        // $this->validateSongInAlbum
 
         return true;
+    }
+
+    private function validateSongInAlbum()
+    {
+        // Verificar se a música está atrelada a algum álbum
+        // Verificar se a ordem da música nesse álbum já existe para gerar erro
     }
 
     public function error()

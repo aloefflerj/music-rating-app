@@ -4,7 +4,7 @@ namespace MusicRating\Models;
 
 use MusicRating\Models\Helpers\DBConnection;
 
-class ArtistsModel extends BaseModel
+class AlbumsModel extends BaseModel
 {
     use DBConnection;
 
@@ -25,7 +25,7 @@ class ArtistsModel extends BaseModel
      */
     public function getAll(): ?array
     {
-        $query = $this->pdo->prepare('SELECT * FROM artists');
+        $query = $this->pdo->prepare('SELECT * FROM albums');
 
         try {
             $query->execute();
@@ -33,14 +33,14 @@ class ArtistsModel extends BaseModel
             $this->error = $e;
         }
 
-        $artists = $query->fetchAll();
+        $albums = $query->fetchAll();
 
-        return $artists;
+        return $albums;
     }
 
     public function get(int $id)
     {
-        $query = $this->pdo->prepare('SELECT * FROM artists WHERE id = :id');
+        $query = $this->pdo->prepare('SELECT * FROM albums WHERE id = :id');
 
         try {
             $query->execute(['id' => $id]);
@@ -48,34 +48,34 @@ class ArtistsModel extends BaseModel
             $this->error = $e;
         }
 
-        $artist = $query->fetch();
+        $album = $query->fetch();
 
-        if (!$artist) {
-            $this->error = new \Exception("O artista que você procura não existe");
+        if (!$album) {
+            $this->error = new \Exception("O album que você procura não existe");
         }
 
-        return $artist;
+        return $album;
     }
 
     /**
-     * Cria um novo artista
+     * Cria um novo usuário
      *
-     * @param string|null $user
+     * @param string|null $title
      * @return stdClass[]|null
      */
-    public function new(?string $name): ?array
+    public function new(?string $title): ?array
     {
-        $validatedName = $this->validateName($name);
-        if (!$validatedName) {
+        $validatedTitle = $this->validateTitle($title);
+        if (!$validatedTitle) {
             return null;
         }
 
         $params = [
-            'name' => $name
+            'title' => $title
         ];
 
         $query = $this->pdo->prepare(
-            "INSERT INTO artists (name) VALUES (:name)"
+            "INSERT INTO albums (title) VALUES (:title)"
         );
 
         try {
@@ -106,12 +106,12 @@ class ArtistsModel extends BaseModel
         }
 
         if (!$found) {
-            $this->error = new \Exception('Este artista/banda não existe');
+            $this->error = new \Exception('Este album não existe');
             return null;
         }
 
         $query = $this->pdo->prepare(
-            "DELETE FROM artists WHERE id = :id"
+            "DELETE FROM albums WHERE id = :id"
         );
 
         try {
@@ -131,26 +131,24 @@ class ArtistsModel extends BaseModel
         if (!$validatedId) {
             return null;
         }
-
         
         if (empty($body)) {
             $this->error = new \Exception('Insira um valor para alterar');
             return null;
         }
         
-        
-        $artists = $this->getAll();
-        $artist = $this->get($id);
+        $albums = $this->getAll();
+        $album = $this->get($id);
 
-        if (isset($body->name)) {
-            $validatedArtistName = $this->validateName($body->name, $artist);
-            if (!$validatedArtistName) {
+        if (isset($body->title)) {
+            $validatedTitle = $this->validateTitle($body->title, $album);
+            if (!$validatedTitle) {
                 return null;
             }
         }
 
-        if (!in_array($artist, $artists)) {
-            $this->error = new \Exception('Este artista/banda não existe');
+        if (!in_array($album, $albums)) {
+            $this->error = new \Exception('Este album não existe');
             return null;
         };
 
@@ -168,7 +166,7 @@ class ArtistsModel extends BaseModel
         $bodyArr = array_combine($bodyVarKeys, $bodyVarValues);
         $bodyArr['id'] = $id;
 
-        $sql = "UPDATE artists SET {$sqlSet} WHERE id = :id";
+        $sql = "UPDATE albums SET {$sqlSet} WHERE id = :id";
 
         $sql = $this->pdo->prepare($sql);
 
@@ -187,21 +185,21 @@ class ArtistsModel extends BaseModel
      * =============
      */
 
-    private function validateName($name, $currentArtist = null)
+    private function validateTitle($title, $currentAlbum = null)
     {
-        if (empty($name)) {
+        if (empty($title)) {
             $this->error = new \Exception('Insira um nome para o artista/banda');
             return false;
         }
 
-        $artists = $this->getAll();
+        $albums = $this->getAll();
 
-        foreach ($artists as $artist) {
-            if ($artist->name === $name) {
-                if($currentArtist && $currentArtist->name === $name) {
+        foreach ($albums as $album) {
+            if ($album->title === $title) {
+                if($currentAlbum && $currentAlbum->title === $title) {
                     break;
                 }
-                $this->error = new \Exception('Este(a) artista/banda já está cadastrado');
+                $this->error = new \Exception('Este album já está cadastrado');
                 return false;
             }
         }

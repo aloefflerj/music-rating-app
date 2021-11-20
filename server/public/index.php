@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use MusicRating\Controllers\AlbumController;
 use MusicRating\Controllers\ArtistController;
 use MusicRating\Controllers\SongController;
 use MusicRating\Controllers\UserController;
@@ -45,6 +46,16 @@ SongController::init();
 $app->get('/v1/songs', SongController::getAll());
 $app->post('/v1/songs', SongController::new());
 $app->get('/v1/songs/{id}', SongController::get());
+$app->delete('/v1/songs/{id}', SongController::delete());
+$app->put('/v1/songs/{id}', SongController::update());
+
+// Album group ---------------->
+AlbumController::init();
+$app->get('/v1/albums', AlbumController::getAll());
+$app->post('/v1/albums', AlbumController::new());
+$app->get('/v1/albums/{id}', AlbumController::get());
+$app->delete('/v1/albums/{id}', AlbumController::delete());
+$app->put('/v1/albums/{id}', AlbumController::update());
 
 // Artists group ---------------->
 ArtistController::init();
