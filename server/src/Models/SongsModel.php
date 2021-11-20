@@ -10,9 +10,6 @@ class SongsModel extends BaseModel
 
     private $pdo;
 
-
-    private $error;
-
     public function __construct()
     {
         $this->pdo = $this->conn('music_rating_app', 'music_rating_db', 'root', '123#@!');
@@ -248,8 +245,4 @@ class SongsModel extends BaseModel
         // Verificar se a ordem da música nesse álbum já existe para gerar erro
     }
 
-    public function error()
-    {
-        return $this->error ?? false;
-    }
 }

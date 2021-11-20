@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use MusicRating\Controllers\AlbumController;
 use MusicRating\Controllers\ArtistController;
+use MusicRating\Controllers\RelationshipController;
 use MusicRating\Controllers\SongController;
 use MusicRating\Controllers\UserController;
 use MusicRating\Controllers\WebController;
@@ -32,6 +33,8 @@ $app->get('/', WebController::home());
  * ||              API               || ==================================>
  * ====================================
  */
+// Relationships init ---------------->
+RelationshipController::init();
 
 // Users group ----------------->
 UserController::init();
@@ -48,6 +51,7 @@ $app->post('/v1/songs', SongController::new());
 $app->get('/v1/songs/{id}', SongController::get());
 $app->delete('/v1/songs/{id}', SongController::delete());
 $app->put('/v1/songs/{id}', SongController::update());
+$app->get('/v1/songs/filter/album/{album}', RelationshipController::getAllSongsFromAlbum());
 
 // Album group ---------------->
 AlbumController::init();
@@ -64,6 +68,10 @@ $app->post('/v1/artists', ArtistController::new());
 $app->get('/v1/artists/{id}', ArtistController::get());
 $app->delete('/v1/artists/{id}', ArtistController::delete());
 $app->put('/v1/artists/{id}', ArtistController::update());
+
+
+// Relationships group
+$app->post('/v1/relationships/albums/addSong', RelationshipController::addSongToAlbum());
 
 
 // Test group ---------------->

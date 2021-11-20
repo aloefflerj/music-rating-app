@@ -10,9 +10,6 @@ class ArtistsModel extends BaseModel
 
     private $pdo;
 
-
-    private $error;
-
     public function __construct()
     {
         $this->pdo = $this->conn('music_rating_app', 'music_rating_db', 'root', '123#@!');
@@ -209,8 +206,4 @@ class ArtistsModel extends BaseModel
         return true;
     }
 
-    public function error()
-    {
-        return $this->error ?? false;
-    }
 }
