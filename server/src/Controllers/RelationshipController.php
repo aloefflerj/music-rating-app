@@ -83,14 +83,30 @@ class RelationshipController
         return function ($req, $res, $body) {
             $body = json_decode($body);
 
-            $album = self::$relationships->addSongToArtist((int)$body->songId, (int)$body->artistId);
+            $artist = self::$relationships->addSongToArtist((int)$body->songId, (int)$body->artistId);
 
             if (self::$relationships->error()) {
                 self::printError();
                 return;
             }
 
-            echo json_encode($album, JSON_PRETTY_PRINT);
+            echo json_encode($artist, JSON_PRETTY_PRINT);
+        };
+    }
+
+    public static function addAlbumToArtist()
+    {
+        return function ($req, $res, $body) {
+            $body = json_decode($body);
+
+            $artist = self::$relationships->addAlbumToArtist((int)$body->albumId, (int)$body->artistId);
+
+            if (self::$relationships->error()) {
+                self::printError();
+                return;
+            }
+
+            echo json_encode($artist, JSON_PRETTY_PRINT);
         };
     }
 

@@ -295,6 +295,92 @@ class RelationshipsModel extends BaseModel
         
     }
 
+    public function addAlbumToArtist($albumId, $artistId)
+    {
+        // Validação música
+        $validatedId = $this->validateId($albumId);
+        if(!$validatedId) {
+            return null;
+        }
+        $album = $this->albums->get($albumId);
+        if(!$album) {
+            $this->error = $this->albums->error();
+            return null;
+        }
+        
+        // Validação artista
+        $validatedId = $this->validateId($artistId);
+        if(!$validatedId) {
+            return null;
+        }
+
+        $artist = $this->artists->get($artistId);
+        if(!$artist) {
+            $this->error = $this->artists->error();
+            return null;
+        }
+
+        $params = [
+            'albumId' => $albumId,
+            'artistId' => $artistId
+        ];
+
+        // Validação de ocorrência
+        $query = $this->pdo->prepare(
+            'SELECT * FROM artists_albums WHERE albums = :albumId AND artists = :artistId'
+        );
+        
+        try {
+            $query->execute($params);
+        } catch (\Exception $e) {
+            $this->error = $e;
+            return null;
+        }
+
+        $occurence = $query->fetch();
+        if($occurence) {
+            $this->error = new \Exception('Este álbum já está atribuído a esse artista');
+            return null;
+        }
+
+        // Inserção
+        $query = $this->pdo->prepare(
+            'INSERT INTO artists_albums (albums, artists) VALUES 
+                (
+                    (SELECT id from albums WHERE id = :albumId),
+                    (SELECT id from artists WHERE id = :artistId)
+                )'
+        );
+
+        try {
+            $query->execute($params);
+        } catch (\Exception $e) {
+            $this->error = $e;
+            return null;
+        }
+
+        $query = $this->pdo->prepare('SELECT * FROM artists WHERE id = :artistId');
+
+        try {
+            $query->execute(['artistId' => $artistId]);
+        } catch (\Exception $e) {
+            $this->error = $e;
+            return null;
+        }
+        
+        $artist = $query->fetch();
+        
+        if (!$artist) {
+            $this->error = new \Exception("O artista que você procura não existe");
+            return null;
+        }
+
+        // validar se os artistas atribuídos ao album estão atribuídos a musica em questão 
+
+        return $artist;
+        
+    }
+
     
 
    

@@ -75,6 +75,7 @@ $app->put('/v1/artists/{id}', ArtistController::update());
 // Relationships group
 $app->post('/v1/relationships/albums/addSong', RelationshipController::addSongToAlbum());
 $app->post('/v1/relationships/artists/addSong', RelationshipController::addSongToArtist());
+$app->post('/v1/relationships/artists/addAlbum', RelationshipController::addAlbumToArtist());
 
 
 // Test group ---------------->
