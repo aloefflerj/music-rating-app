@@ -90,6 +90,38 @@ class RelationshipsModel extends BaseModel
         
         return $songs;
     }
+
+    public function getAllAlbumsFromArtist($artistId)
+    {
+        $validatedId = $this->validateId($artistId);
+        if(!$validatedId) {
+            return null;
+        }
+
+        $artist = $this->artists->get($artistId);
+        if(!$artist) {
+            $this->error = $this->artists->error();
+            return null;
+        }
+        
+        $query = $this->pdo->prepare(
+            'SELECT al.id, al.title, al.created_at, al.updated_at FROM albums al
+            INNER JOIN artists_albums ar_al ON ar_al.albums = al.id 
+            INNER JOIN artists ar ON ar.id = ar_al.artists 
+            WHERE ar.id = :artistId
+            ORDER BY al.created_at'
+        );
+        
+        try {
+            $query->execute(['artistId' => $artistId]);
+        } catch (\Exception $e) {
+            $this->error = $e;
+        }
+        
+        $songs = $query->fetchAll();
+        
+        return $songs;
+    }
     
     public function addSongToAlbum($songId, $albumId)
     {
@@ -174,6 +206,92 @@ class RelationshipsModel extends BaseModel
         // validar se os artistas atribuídos ao album estão atribuídos a musica em questão 
 
         return $album;
+        
+    }
+
+    public function addSongToArtist($songId, $artistId)
+    {
+        // Validação música
+        $validatedId = $this->validateId($songId);
+        if(!$validatedId) {
+            return null;
+        }
+        $song = $this->songs->get($songId);
+        if(!$song) {
+            $this->error = $this->songs->error();
+            return null;
+        }
+        
+        // Validação artista
+        $validatedId = $this->validateId($artistId);
+        if(!$validatedId) {
+            return null;
+        }
+
+        $artist = $this->artists->get($artistId);
+        if(!$artist) {
+            $this->error = $this->artists->error();
+            return null;
+        }
+
+        $params = [
+            'songId' => $songId,
+            'artistId' => $artistId
+        ];
+
+        // Validação de ocorrência
+        $query = $this->pdo->prepare(
+            'SELECT * FROM artists_songs WHERE songs = :songId AND artists = :artistId'
+        );
+        
+        try {
+            $query->execute($params);
+        } catch (\Exception $e) {
+            $this->error = $e;
+            return null;
+        }
+
+        $occurence = $query->fetch();
+        if($occurence) {
+            $this->error = new \Exception('Essa música já está atribuída a esse artista');
+            return null;
+        }
+
+        // Inserção
+        $query = $this->pdo->prepare(
+            'INSERT INTO artists_songs (songs, artists) VALUES 
+                (
+                    (SELECT id from songs WHERE id = :songId),
+                    (SELECT id from artists WHERE id = :artistId)
+                )'
+        );
+
+        try {
+            $query->execute($params);
+        } catch (\Exception $e) {
+            $this->error = $e;
+            return null;
+        }
+
+        $query = $this->pdo->prepare('SELECT * FROM artists WHERE id = :artistId');
+
+        try {
+            $query->execute(['artistId' => $artistId]);
+        } catch (\Exception $e) {
+            $this->error = $e;
+            return null;
+        }
+        
+        $artist = $query->fetch();
+        
+        if (!$artist) {
+            $this->error = new \Exception("O artista que você procura não existe");
+            return null;
+        }
+
+        // validar se os artistas atribuídos ao album estão atribuídos a musica em questão 
+
+        return $artist;
         
     }
 

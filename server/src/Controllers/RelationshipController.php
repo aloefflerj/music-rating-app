@@ -48,12 +48,42 @@ class RelationshipController
         };
     }
 
+    public static function getAllAlbumsFromArtist()
+    {
+        return function ($req, $res, $param) {
+            $songs = self::$relationships->getAllAlbumsFromArtist($param->id);
+
+            if (self::$relationships->error()) {
+                self::printError();
+                return;
+            }
+
+            echo json_encode($songs, JSON_PRETTY_PRINT);
+        };
+    }
+
     public static function addSongToAlbum()
     {
         return function ($req, $res, $body) {
             $body = json_decode($body);
 
             $album = self::$relationships->addSongToAlbum((int)$body->songId, (int)$body->albumId);
+
+            if (self::$relationships->error()) {
+                self::printError();
+                return;
+            }
+
+            echo json_encode($album, JSON_PRETTY_PRINT);
+        };
+    }
+
+    public static function addSongToArtist()
+    {
+        return function ($req, $res, $body) {
+            $body = json_decode($body);
+
+            $album = self::$relationships->addSongToArtist((int)$body->songId, (int)$body->artistId);
 
             if (self::$relationships->error()) {
                 self::printError();

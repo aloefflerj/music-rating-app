@@ -61,6 +61,7 @@ $app->post('/v1/albums', AlbumController::new());
 $app->get('/v1/albums/{id}', AlbumController::get());
 $app->delete('/v1/albums/{id}', AlbumController::delete());
 $app->put('/v1/albums/{id}', AlbumController::update());
+$app->get('/v1/albums/filter/artist/{id}', RelationshipController::getAllAlbumsFromArtist());
 
 // Artists group ---------------->
 ArtistController::init();
@@ -73,6 +74,7 @@ $app->put('/v1/artists/{id}', ArtistController::update());
 
 // Relationships group
 $app->post('/v1/relationships/albums/addSong', RelationshipController::addSongToAlbum());
+$app->post('/v1/relationships/artists/addSong', RelationshipController::addSongToArtist());
 
 
 // Test group ---------------->
