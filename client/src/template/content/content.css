@@ -1,0 +1,5 @@
+main.content {
+    grid-area: content;
+    display: flex;
+    padding: 5px 20px;
+}

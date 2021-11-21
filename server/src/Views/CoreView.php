@@ -11,11 +11,12 @@ class CoreView
     public function __construct(?string $mainFolder = null, ?string $mainTemplate = null, ?string $fileBaseExtension = 'php') {
         
         $this->mainFolder = $mainFolder ?? dirname(__FILE__);
-        $template = $mainTemplate !== null ? $mainTemplate : '/_template.php';
+        $template = $mainTemplate !== null ? "{$mainTemplate}.{$fileBaseExtension}" : "_template.{$fileBaseExtension}";
         $this->fileBaseExtension = $fileBaseExtension;
         
-        $this->template = file_get_contents("{$this->mainFolder}{$template}");
-
+        ob_start();
+        include("{$this->mainFolder}/{$template}");
+        $this->template = ob_get_clean();
     }
 
     public function render(?string $section, ?array $variables = null) {
@@ -25,24 +26,22 @@ class CoreView
         if($variables) {
             $this->setValuesInHtml($variables);
         }
-        
         return $this->template;
     }
 
     private function setValuesInHtml(array $variables) {
         foreach($variables as $key => $value) {
-            if(is_array($value)) {
-                echo 'fudeu';    
-                continue;
-            }
-
             $this->template =  str_replace("{{ {$key} }}", $value, $this->template);
         }
+        $this->template =  str_replace("{{ @css }}", dirname(__DIR__, 1) . '/assets/main.css', $this->template);
     }
 
     private function setSectionInTemplate(string $sectionFileName) {
 
-        $section = file_get_contents("{$this->mainFolder}/{$sectionFileName}.{$this->fileBaseExtension}");
+        ob_start();
+        include("{$this->mainFolder}/{$sectionFileName}.{$this->fileBaseExtension}");
+        $section = ob_get_clean();
+        
         $this->template = str_replace("{{ @content }}", $section, $this->template);
                     
         if(substr_count($this->template, "@folder->") > 0) {
@@ -56,7 +55,9 @@ class CoreView
             array_shift($folderSectionElements);
             
             foreach($folderSectionElements as $folderSectionElement) {
-                $folderFiles[] = file_get_contents("{$this->mainFolder}/{$folderSectionElement}.{$this->fileBaseExtension}");
+                ob_start();
+                include("{$this->mainFolder}/{$folderSectionElement}.{$this->fileBaseExtension}");
+                $folderFiles[] = ob_get_clean();
             }
 
             foreach($folderFiles as $key => $value) {

@@ -1,0 +1,8 @@
+form .form-group {
+    margin-bottom: 15px;
+}
+
+form .form-row > button {
+    margin-right: 7px;
+    margin-bottom: 15px;
+}

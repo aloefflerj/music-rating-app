@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use MusicRating\Controllers\AlbumController;
+use MusicRating\Controllers\AppController;
 use MusicRating\Controllers\ArtistController;
 use MusicRating\Controllers\RelationshipController;
 use MusicRating\Controllers\SongController;
@@ -18,15 +19,23 @@ include_once dirname(__DIR__, 1) . '/src/autoload.php';
 
 $app = new BaseController();
 
-APIMiddleware::apply();
+// APIMiddleware::apply();
 
 /**
  * =====================================
  * ||              WEB               || ==================================>
  * ====================================
  */
+AppController::init();
+
 WebController::init();
-$app->get('/', WebController::home());
+if(isset($_SESSION['user']['adm'])) {
+    $app->get('/', WebController::home());
+} else {
+    $app->get('/', AppController::home());
+    $app->get('/login', AppController::login());
+}
+
 
 /**
  * =====================================
@@ -85,6 +94,6 @@ $app->get('/test/{id}', function ($req, $res, $params) {
 
 $app->dispatch();
 
-if ($app->error()) {
-    echo $app->error()->getMessage();
-}
+// if ($app->error()) {
+//     echo $app->error()->getMessage();
+// }

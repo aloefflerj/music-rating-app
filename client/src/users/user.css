@@ -1,0 +1,18 @@
+div.table-responsive {
+    width: 100%;
+    height: 100%;
+}
+
+/* Resolvendo erro de cor do bootstrap da thead da tabela */
+.table > :not(:last-child) > :last-child > * {
+    border-bottom-color: #ddd;
+}
+
+td.buttons {
+    display: flex;
+    justify-content: flex-end;
+}
+
+td.buttons button {
+    margin-right: 8px;
+}

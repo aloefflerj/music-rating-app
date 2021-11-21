@@ -33,6 +33,17 @@ services:
       - ./dump.sql:/docker-entrypoint-initdb.d/dump.sql
     networks:
       - music_rating_network
+  music_rating_client:
+    build:
+      context: ..
+      dockerfile: ./env/react.Dockerfile
+    ports:
+      - "80:3000"
+    container_name: music_rating_client
+    stdin_open: true
+    volumes:
+       - ../client:/usr/app
+       - /usr/app/node_modules
 networks:
     music_rating_network:
         driver: bridge

@@ -1,0 +1,40 @@
+header.header {
+    grid-area: header;
+    display: flex;
+    flex-direction: column;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+}
+
+header.header .upper-header {
+    height: 75%;
+    display: flex;
+    padding-top: 20px;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+}
+
+header.header .upper-header img {
+    object-fit: scale-down;
+    width: 100%;
+}
+
+header.header .lower-header {
+    display: flex;
+    height: 100%;
+    padding: 5px 20px;
+    justify-content: center;
+    align-items: center;
+    border-top: solid 1px #ddd;
+    border-bottom: solid 1px #ddd;
+
+}
+
+header.header .lower-header :nth-child(2) {
+    margin-left: 25%;
+}
+
+header.header .lower-header :nth-child(3) {
+    width: 240px;
+    margin-left: 60px;
+}

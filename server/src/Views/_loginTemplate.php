@@ -8,17 +8,6 @@
     <title>Document</title>
 </head>
 <body>
-    <header class="header">
-        {{ @folder->_header }}
-    </header>
-    <main class="content">
-        {{ @content }}
-    </main>
-    <aside class="sidebar">
-        {{ @folder->_sidebar }}
-    </aside>
-    <footer>
-        {{ @folder->_footer }}
-    </footer>
+    {{ @content }}
 </body>
 </html>
