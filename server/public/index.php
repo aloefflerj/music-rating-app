@@ -2,8 +2,10 @@
 
 declare(strict_types=1);
 
+session_start();
+
 use MusicRating\Controllers\AlbumController;
-use MusicRating\Controllers\AppController;
+use MusicRating\Controllers\AuthController;
 use MusicRating\Controllers\ArtistController;
 use MusicRating\Controllers\RelationshipController;
 use MusicRating\Controllers\SongController;
@@ -19,22 +21,15 @@ include_once dirname(__DIR__, 1) . '/src/autoload.php';
 
 $app = new BaseController();
 
-// APIMiddleware::apply();
+APIMiddleware::apply();
 
 /**
  * =====================================
  * ||              WEB               || ==================================>
  * ====================================
  */
-AppController::init();
-
 WebController::init();
-if(isset($_SESSION['user']['adm'])) {
-    $app->get('/', WebController::home());
-} else {
-    $app->get('/', AppController::home());
-    $app->get('/login', AppController::login());
-}
+$app->get('/', WebController::home());
 
 
 /**
@@ -85,6 +80,12 @@ $app->put('/v1/artists/{id}', ArtistController::update());
 $app->post('/v1/relationships/albums/addSong', RelationshipController::addSongToAlbum());
 $app->post('/v1/relationships/artists/addSong', RelationshipController::addSongToArtist());
 $app->post('/v1/relationships/artists/addAlbum', RelationshipController::addAlbumToArtist());
+
+AuthController::init();
+$app->post('/v1/auth/register', AuthController::register());
+$app->post('/v1/auth/login', AuthController::login());
+$app->get('/v1/auth/logged', AuthController::logged());
+$app->post('/v1/auth/logout', AuthController::logout());
 
 
 // Test group ---------------->

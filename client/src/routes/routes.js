@@ -1,29 +1,29 @@
 import axios from 'axios'
 
 const api = axios.create({
-    baseURL: 'http://localhost:8000/v1/users',
+    baseURL: 'http://localhost:8000/v1/',
     headers: { 'Content-Type': 'application/json' },
 })
 
 const getUsers = () =>
-    api.get('').then(res => {
+    api.get('users').then(res => {
         return res
     })
 
 const newUser = data =>
-    api.post('', JSON.stringify(data)).then(res => {
+    api.post('users', JSON.stringify(data)).then(res => {
         return res
     })
 
 const updateUser = (id, data) =>
-    api.put('/' + id, JSON.stringify(data)).then(res => {
+    api.put('user/' + id, JSON.stringify(data)).then(res => {
         return res
     })
 
 const deleteUser = id =>
-    api.delete('/' + id).then(res => {
-        // console.log(req)
+    api.delete('user/' + id).then(res => {
         return res
     })
 
 export { getUsers, newUser, updateUser, deleteUser }
+// export { getUsers }

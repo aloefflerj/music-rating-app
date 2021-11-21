@@ -1,13 +1,12 @@
 div.App {
-  display: grid;
-  /* grid-template-columns: 1fr; */
-  grid-template-rows: 256px 1fr 40px;
-  grid-template-areas:
-    "header"
-    "content"
-    "footer";
-  background-color: #eee;
-  width: 80vw;
-  min-height: 70vh;
-  border-radius: 4px;
+    display: grid;
+    grid-template-columns: 210px 1fr;
+    grid-template-rows: 64px 1fr 64px;
+    grid-template-areas: 
+    "header header" 
+    "sidebar content" 
+    "footer footer";
+    height: 100vh;
+    background-color: #eee;
+    margin: 12px;
 }

@@ -1,0 +1,6 @@
+aside.sidebar {
+    grid-area: sidebar;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

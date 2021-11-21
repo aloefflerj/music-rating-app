@@ -24,7 +24,7 @@ class UsersModel
      */
     public function getAll(): ?array
     {
-        $query = $this->pdo->prepare('SELECT * FROM users');
+        $query = $this->pdo->prepare('SELECT id, username, mail, user_type FROM users');
 
         try {
             $query->execute();
@@ -215,6 +215,99 @@ class UsersModel
         }
 
         return $this->get($id);
+    }
+
+    public function register(?string $username, ?string $mail, ?string $passwd, ?string $passwdConfirm, ?string $user_type)
+    {
+        if(empty($passwdConfirm)) {
+            $this->error = new \Exception("Insira um valor de confirmação de senha");
+            return null;
+        }
+
+        if($passwd != $passwdConfirm) {
+            $this->error = new \Exception("A senha e a confirmação devem ser iguais");
+            return null;
+        }
+
+        $this->new($username, $mail, $passwd, $user_type);
+
+        $query = $this->pdo->prepare('SELECT id, username, mail FROM users WHERE username = :username');
+
+        try {
+            $query->execute(['username' => $username]);
+        } catch(\Exception $e) {
+            $this->error = $e;
+        }
+
+        $user = $query->fetch();
+
+        return $user;
+    }
+
+    public function login(?string $username, ?string $passwd)
+    {
+
+        if (empty($username)) {
+            $this->error = new \Exception('Insira um nome de usuário');
+            return null;
+        }
+
+        $username = filter_var($username, FILTER_SANITIZE_STRIPPED);
+        if(!$username) {
+            $this->error = new \Exception('Ocorreu um erro inseperado');
+            return null;
+        }
+
+        if (empty($passwd)) {
+            $this->error = new \Exception('Insira sua senha');
+            return null;
+        }
+
+        $passwd = filter_var($passwd, FILTER_SANITIZE_STRIPPED);
+        if(!$passwd) {
+            $this->error = new \Exception('Ocorreu um erro inseperado');
+            return null;
+        }
+
+        $query = $this->pdo->prepare('SELECT id, username, mail, passwd, user_type FROM users WHERE username = :username');
+
+        try {
+            $query->execute(['username' => $username]);
+        } catch (\Exception $e) {
+            $this->error = $e;
+            return null;
+        }
+
+        $user = $query->fetch();
+
+        if(!$user || !password_verify($passwd, $user->passwd)) {
+            $this->error = new \Exception("Usuário ou senha inválidos");
+            return null;
+        }
+
+        unset($user->passwd);
+
+        $_SESSION['user'] = $user;
+
+        return $user;
+
+        // check correct passwd
+    }
+
+    public function logged()
+    {
+        return isset($_SESSION['user']) ? $_SESSION['user'] : false;
+    }
+
+    public function logout()
+    {
+        if(!isset($_SESSION['user'])) {
+            $this->error = new \Exception('Não existe nenhum usuário logado');
+            return null;
+        }
+
+        unset($_SESSION['user']);
+        return true;
     }
 
     /*
