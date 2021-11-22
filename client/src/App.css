@@ -6,7 +6,26 @@ div.App {
     "header header" 
     "sidebar content" 
     "footer footer";
+    height: 100%;
+    background-color: #eee;
+    margin: 20px;
+    border-radius: 5px;
+}
+
+div.AppLogin {
+    display: grid;
+    grid-template-columns: 210px 1fr;
+    grid-template-rows: 64px 1fr 64px;
+    grid-template-areas: 
+    "header header" 
+    "content content" 
+    "footer footer";
     height: 100vh;
     background-color: #eee;
-    margin: 12px;
+    margin: 20px;
+    border-radius: 5px;
+}
+
+div.AppLogin .sidebar {
+    display: none;
 }

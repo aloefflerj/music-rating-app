@@ -2,5 +2,47 @@ main.content {
     grid-area: content;
     display: flex;
     flex-direction: column;
+    padding-top: 50px;
+    
+    align-items: center;
+}
+
+div.form {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 15px;
+    max-width: 500px;
+}
+
+main.content .fa-music {
+    width: 200px;
+}
+
+main.content .songs {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
     padding: 5px 20px;
+    border-bottom: 1px solid #ccc;
+}
+
+main.content h3 {
+    margin-top: 20px;
+}
+
+main.content .songs a {
+    text-decoration: none;
+    color: #333;
+}
+
+main.content .songs a:hover {
+    text-decoration: underline;
+    font-weight: bolder;
+}
+
+main.content .stars-label {
+    margin: 0;
 }

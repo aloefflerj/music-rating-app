@@ -38,7 +38,7 @@ const Login = props => {
         sidebar={false}
         headerLink={
             <Link to='/register'>
-                <Button color='white'><FontAwesomeIcon icon={faUser} />&nbsp;Register</Button>
+                <Button color='white'><FontAwesomeIcon icon={faUser} />&nbsp; Register</Button>
             </Link>
         }
         />

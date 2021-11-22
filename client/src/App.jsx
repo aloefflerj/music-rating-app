@@ -7,6 +7,8 @@ import Login from './pages/Login'
 import Home from './pages/Home'
 import { register, login, logout, logged } from './routes/authRoutes'
 import Register from './pages/Register'
+import Songs from './pages/Songs/Songs'
+import Song from './pages/Songs/Song'
 
 class App extends Component {
     constructor(props) {
@@ -38,12 +40,12 @@ class App extends Component {
     handleRegisterSubmit = async data => {
         const res = register(data)
         const registerResponse = (await res).data
-        console.log(registerResponse.msg)
         if(registerResponse.success == false) {
             alert(registerResponse.msg)
             return
         }
-        window.location.reload(false)
+        window.location.replace('http://localhost/login')
+        // window.location.reload(false)
     }
 
     handleLoginSubmit = async data => {
@@ -53,16 +55,20 @@ class App extends Component {
             alert(loginResponse.msg)
             return
         }
-        window.location.reload(false)
+        // window.location.reload(false)
+        window.location.replace('http://localhost/')
     }
     
     handleLogout = async () => {
-        console.log('called from app')
         const res = logout()
         const logoutResponse = (await res).data
-        window.location.reload(false)
+        window.location.replace('http://localhost/login')
+        // window.location.reload(false)
     }
 
+    PrivateRoute({children}) {
+        return logged ? children : <Navigate replace to='login' />
+    }
     // filter = (value, filter) => {
     //     if(value === ''){
     //         this.init()
@@ -92,24 +98,38 @@ class App extends Component {
 
     render() {
 
-        if(!this.state.logged) {
-            return (
-                <div className='App'>
-                    <Routes>
-                        <Route path='/login' element={<Login loginSubmit={this.handleLoginSubmit}/>} />
-                        <Route path='/register' element={<Register registerSubmit={this.handleRegisterSubmit}/>} />
-                        <Route path='*' element={<Navigate replace to='/login' />} />
-                    </Routes>
-                </div>
-            )
-        }
+        // if(!this.state.logged) {
+        //     return (
+        //         <div className='AppLogin'>
+        //             <Routes>
+        //                 <Route path='/login' element={<Login loginSubmit={this.handleLoginSubmit}/>} />
+        //                 <Route path='/register' element={<Register registerSubmit={this.handleRegisterSubmit}/>} />
+        //                 <Route path='*' element={<Navigate replace to='/login' />} />
+        //             </Routes>
+        //         </div>
+        //     )
+        // }
 
         return (
-            <div className='App'>
+            <div className={this.state.logged ? 'App' : 'AppLogin'}>
                 <Routes>
-                    <Route path='/' element={<Home handleLogout={this.handleLogout}/>} />
-                    <Route path='/login' element={<Navigate replace to='/' />} />
-                    <Route path='*' element={<Ooops />} />
+                        <Route path='/login' element={<Login loginSubmit={this.handleLoginSubmit}/>} />
+                        <Route path='/register' element={<Register registerSubmit={this.handleRegisterSubmit}/>} />
+                        <Route path='/' element={
+                            <this.PrivateRoute>
+                                    <Home handleLogout={this.handleLogout} logged={this.state.logged}/>
+                            </this.PrivateRoute>
+                            } 
+                        />
+                        <Route path='/songs' element={
+                            <this.PrivateRoute>
+                                    <Songs handleLogout={this.handleLogout} logged={this.state.logged}/>
+                            </this.PrivateRoute>
+                            } 
+                        >
+                        </Route>
+                        <Route path='/songs/:songId' element={<Song logged={this.state.logged} />} />
+                        <Route path='*' element={<Ooops />} />
                 </Routes>
             </div>
         )

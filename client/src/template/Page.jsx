@@ -12,7 +12,6 @@ const Page = props => {
 
     const handleLogout = () => props.handleLogout()
     
-
     return (
         <>
             <Header>
@@ -33,14 +32,18 @@ const Page = props => {
             {props.sidebar ??
                 <Sidebar>
                     <ul>
-                        <li>item1</li>
-                        <li>item2</li>
-                        <li>item3</li>
+                        <Link to='/songs'><li>Songs</li></Link>
+                        <Link to='/albums'><li>Albums</li></Link>
+                        <Link to='/artists'><li>Artists</li></Link>
+                        {props.logged.user_type === 'adm' ?
+                            <Link to='/users'><li>Users</li></Link> :
+                            null
+                        }
                     </ul>
                 </Sidebar>
             }
             <Content>
-                {props.subHeader ?? <h3>{props.subHeader}</h3>}
+                {props.subHeader ? <h3>{props.subHeader}</h3> : null}
                 {props.content}
             </Content>
             <Footer />
