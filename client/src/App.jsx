@@ -1,11 +1,12 @@
 import React, { Component } from 'react'
 import './App.css'
-import { getUsers } from './routes/routes'
-import { Routes, Route, Link, Navigate } from 'react-router-dom'
-import If from './common/If'
+import { getUsers } from './routes/userRoutes'
+import { Routes, Route, Navigate } from 'react-router-dom'
 import Ooops from './pages/Ooops'
 import Login from './pages/Login'
 import Home from './pages/Home'
+import { register, login, logout, logged } from './routes/authRoutes'
+import Register from './pages/Register'
 
 class App extends Component {
     constructor(props) {
@@ -14,6 +15,9 @@ class App extends Component {
             users: [],
             logged: false
         }
+
+        this.handleLoginSubmit = this.handleLoginSubmit.bind(this)
+        this.handleLogout = this.handleLogout.bind(this)
     }
     
     async componentDidMount() {
@@ -22,11 +26,41 @@ class App extends Component {
 
     init = async () => {
         const res = getUsers()
+        const loggedRes = logged()
         const usersResponse = (await res).data
-        console.log(this.state.logged)
-        // this.setState({
-        //     users: usersResponse,
-        // })
+        const loggedResponse = (await loggedRes).data
+        this.setState({
+            users: usersResponse,
+            logged: loggedResponse
+        })
+    }
+
+    handleRegisterSubmit = async data => {
+        const res = register(data)
+        const registerResponse = (await res).data
+        console.log(registerResponse.msg)
+        if(registerResponse.success == false) {
+            alert(registerResponse.msg)
+            return
+        }
+        window.location.reload(false)
+    }
+
+    handleLoginSubmit = async data => {
+        const res = login(data)
+        const loginResponse = (await res).data
+        if(loginResponse.success == false) {
+            alert(loginResponse.msg)
+            return
+        }
+        window.location.reload(false)
+    }
+    
+    handleLogout = async () => {
+        console.log('called from app')
+        const res = logout()
+        const logoutResponse = (await res).data
+        window.location.reload(false)
     }
 
     // filter = (value, filter) => {
@@ -62,7 +96,8 @@ class App extends Component {
             return (
                 <div className='App'>
                     <Routes>
-                        <Route path='/login' element={<Login />} />
+                        <Route path='/login' element={<Login loginSubmit={this.handleLoginSubmit}/>} />
+                        <Route path='/register' element={<Register registerSubmit={this.handleRegisterSubmit}/>} />
                         <Route path='*' element={<Navigate replace to='/login' />} />
                     </Routes>
                 </div>
@@ -72,7 +107,8 @@ class App extends Component {
         return (
             <div className='App'>
                 <Routes>
-                    <Route path='/' element={<Home />} />
+                    <Route path='/' element={<Home handleLogout={this.handleLogout}/>} />
+                    <Route path='/login' element={<Navigate replace to='/' />} />
                     <Route path='*' element={<Ooops />} />
                 </Routes>
             </div>

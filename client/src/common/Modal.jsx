@@ -113,8 +113,6 @@ const ModalTemplate = props => {
         }
         if (response.message) {
             setError({ ...error, status: true, message: response.message })
-            console.log(error.message)
-            // console.log(message)
             return
         }
         props.init()

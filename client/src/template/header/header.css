@@ -2,7 +2,16 @@ header.header {
     grid-area: header;
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: space-around;
     border-top-left-radius: 4px;
     border-top-right-radius: 4px;
+}
+
+header .title {
+    display: flex;
+    align-items: center;
+}
+
+header .hidden {
+    width: 56px;
 }

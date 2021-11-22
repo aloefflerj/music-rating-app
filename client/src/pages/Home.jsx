@@ -4,7 +4,7 @@ import Page from '../template/Page'
 
 const Home = props => {
     return (
-        <Page />
+        <Page handleLogout={props.handleLogout}/>
     )
 }
 
