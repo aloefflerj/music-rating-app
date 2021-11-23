@@ -22,8 +22,9 @@ CREATE TABLE `users` (
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
 INSERT INTO `users` (`id`, `username`, `mail`, `passwd`, `user_type`) VALUES 
-  (1, 'manager', 'manager@rating-songs.com', '123', 'adm'),
-  (2, 'regular_user', 'regular_user@rating-songs.com', '123', 'regular');
+  (1, 'app', 'regular_user@rating-songs.com', '$2y$10$cUu05b2DVdRj/oWp/fMNgOIzMLg.ciI0QAOQmFWs/Ms1pBl.sNNgG', 'app'),
+  (2, 'adm', 'adm@rating-songs.com', '$2y$10$cUu05b2DVdRj/oWp/fMNgOIzMLg.ciI0QAOQmFWs/Ms1pBl.sNNgG', 'adm'),
+  (3, 'dba', 'dba@rating-songs.com', '$2y$10$cUu05b2DVdRj/oWp/fMNgOIzMLg.ciI0QAOQmFWs/Ms1pBl.sNNgG', 'dba');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -217,7 +218,10 @@ CREATE TABLE IF NOT EXISTS `starred_songs` (
 INSERT INTO `starred_songs` (`id`, `stars`, `songs`, `users`) VALUES
   (1, 4, 1, 1),
   (2, 5, 2, 1),
-  (3, 3, 5, 1);
+  (3, 3, 5, 1),
+  (4, 1, 15, 2),
+  (5, 2, 12, 3),
+  (6, 4, 14, 3);
 
 
 /* STARRED_ALBUMS  ------------------------> */
@@ -257,3 +261,178 @@ CREATE TABLE IF NOT EXISTS `starred_artists` (
 INSERT INTO `starred_artists` (`id`, `stars`, `artists`, `users`) VALUES
   (1, 5, 1, 1),
   (2, 5, 2, 1);
+
+
+-- ====================================
+-- ||            FUNCTIONS           || ==========================================>
+-- ====================================
+
+DROP FUNCTION IF EXISTS StarText;
+
+DELIMITER // 
+
+CREATE FUNCTION StarsText(stars INT(5)) RETURNS VARCHAR(10)
+DETERMINISTIC
+BEGIN
+  DECLARE star_text VARCHAR(10);
+
+  IF stars = 1 THEN SET star_text = 'Bad';
+  ELSEIF stars = 2 THEN SET star_text = 'Regular';
+  ELSEIF stars = 3 THEN SET star_text = 'Good';
+  ELSEIF stars = 4 THEN SET star_text = 'Great';
+  ELSEIF stars = 5 THEN SET star_text = 'Awesome';
+  END IF;
+
+  RETURN (star_text);
+
+END // 
+DELIMITER ;
+
+-- ====================================
+-- ||            PROCEDURES          || ==========================================>
+-- ====================================
+
+-- DELETE SONG PROCEDURE ---------------------------------------------->
+DROP PROCEDURE IF EXISTS DeleteSong;
+
+DELIMITER // 
+CREATE PROCEDURE DeleteSong(IN song_id INT)
+BEGIN 
+
+
+    DELETE FROM artists_songs WHERE songs = song_id;
+    DELETE FROM albums_songs WHERE songs = song_id;
+    DELETE FROM starred_songs WHERE songs = song_id;
+
+    DELETE FROM songs WHERE id = song_id;
+
+
+END // 
+DELIMITER ; 
+
+-- DELETE SONG PROCEDURE ---------------------------------------------->
+
+
+-- DELETE ALBUM PROCEDURE ---------------------------------------------->
+
+DROP PROCEDURE IF EXISTS DeleteAlbum;
+
+
+DELIMITER // 
+CREATE PROCEDURE DeleteAlbum(IN album_id INT)
+BEGIN 
+
+
+    DELETE FROM artists_albums WHERE albums = album_id;
+    DELETE FROM albums_songs WHERE albums = album_id;
+    DELETE FROM starred_albums WHERE albums = album_id;
+
+    DELETE FROM albums WHERE id = album_id;
+
+
+END // 
+DELIMITER ; 
+
+-- DELETE ALBUM PROCEDURE ---------------------------------------------->
+
+-- DELETE ARTIST PROCEDURE ---------------------------------------------->
+
+DROP PROCEDURE IF EXISTS DeleteArtist;
+
+
+DELIMITER // 
+CREATE PROCEDURE DeleteArtist(IN artist_id INT)
+BEGIN 
+
+
+    DELETE FROM artists_songs WHERE artists = artist_id;
+    DELETE FROM artists_albums WHERE artists = artist_id;
+    DELETE FROM starred_artists WHERE artists = artist_id;
+
+    DELETE FROM artists WHERE id = artist_id;
+
+
+END // 
+DELIMITER ; 
+
+-- DELETE ARTIST PROCEDURE ---------------------------------------------->
+
+-- DELETE USER PROCEDURE ---------------------------------------------->
+
+DROP PROCEDURE IF EXISTS DeleteUser;
+
+
+DELIMITER // 
+CREATE PROCEDURE DeleteUser(IN user_id INT)
+BEGIN 
+
+
+    DELETE FROM starred_songs WHERE users = user_id;
+    DELETE FROM starred_albums WHERE users = user_id;
+    DELETE FROM starred_artists WHERE users = user_id;
+
+    DELETE FROM users WHERE id = user_id;
+
+
+END // 
+DELIMITER ; 
+
+-- DELETE USER PROCEDURE ---------------------------------------------->
+
+
+-- =====================================
+-- ||          DATABASE USERS         || ==========================================>
+-- =====================================
+
+-- WEB USER ---------------------------------------------------------->
+DROP USER IF EXISTS 'web';
+CREATE USER IF NOT EXISTS 'web' IDENTIFIED BY '123!@#qweQWE';
+
+DROP VIEW IF EXISTS web_users;
+CREATE VIEW web_users AS
+SELECT u.id, u.username, u.mail, u.passwd, u.user_type
+FROM users u;
+
+GRANT SELECT, INSERT ON web_users TO 'web';
+-- WEB USER ---------------------------------------------------------->
+
+-- APP USER ---------------------------------------------------------->
+DROP USER IF EXISTS 'app';
+CREATE USER IF NOT EXISTS 'app' IDENTIFIED BY '123!@#qweQWE';
+
+DROP VIEW IF EXISTS app_users;
+CREATE VIEW app_users AS
+SELECT u.id, u.username, u.mail, u.passwd, u.user_type
+FROM users u;
+
+GRANT SELECT, UPDATE ON app_users TO 'app';
+GRANT SELECT ON songs TO 'app';
+GRANT SELECT ON albums TO 'app';
+GRANT SELECT ON artists TO 'app';
+GRANT SELECT, UPDATE, INSERT ON starred_songs TO 'app';
+GRANT SELECT, UPDATE, INSERT ON starred_albums TO 'app';
+GRANT SELECT, UPDATE, INSERT ON starred_artists TO 'app';
+GRANT EXECUTE ON FUNCTION StarsText TO 'app';
+-- APP USER ---------------------------------------------------------->
+
+-- ADM USER ---------------------------------------------------------->
+DROP USER IF EXISTS 'adm';
+CREATE USER IF NOT EXISTS 'adm' IDENTIFIED BY '123!@#qweQWE';
+
+DROP VIEW IF EXISTS adm_users;
+CREATE VIEW adm_users AS
+SELECT u.id, u.username, u.mail, u.passwd, u.user_type
+FROM users u;
+
+GRANT SELECT, UPDATE ON adm_users TO 'adm';
+GRANT EXECUTE ON PROCEDURE DeleteSong TO 'adm';
+GRANT EXECUTE ON PROCEDURE DeleteAlbum TO 'adm';
+GRANT EXECUTE ON PROCEDURE DeleteArtist TO 'adm';
+GRANT EXECUTE ON FUNCTION StarsText TO 'adm';
+GRANT SELECT, UPDATE, INSERT ON songs TO 'adm';
+GRANT SELECT, UPDATE, INSERT ON albums TO 'adm';
+GRANT SELECT, UPDATE, INSERT ON artists TO 'adm';
+GRANT SELECT, UPDATE, INSERT ON starred_songs TO 'adm';
+GRANT SELECT, UPDATE, INSERT ON starred_albums TO 'adm';
+GRANT SELECT, UPDATE, INSERT ON starred_artists TO 'adm';
+-- ADM USER ---------------------------------------------------------->

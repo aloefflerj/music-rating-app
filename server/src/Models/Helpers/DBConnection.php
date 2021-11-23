@@ -2,15 +2,13 @@
 
 namespace MusicRating\Models\Helpers;
 
-use PDO;
-
 trait DBConnection
 {
-    public function conn($db, $host, $user, $passwd) 
+    public function conn($userConn) 
     {
         $pdo = null;
 
-        $dsn = "mysql:dbname={$db};host={$host};port=3306";
+        $dsn = "mysql:dbname={$userConn->db};host={$userConn->host};port=3306";
         $options = [
             \PDO::ATTR_ERRMODE            => \PDO::ERRMODE_EXCEPTION,
             \PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_OBJ,
@@ -19,7 +17,7 @@ trait DBConnection
         ];
 
         try {
-            $pdo = new \PDO($dsn, $user, $passwd, $options); 
+            $pdo = new \PDO($dsn, $userConn->user, $userConn->passwd, $options); 
         } catch (\PDOException $e) {
             throw new \PDOException($e->getMessage(), (int)$e->getCode());
         }

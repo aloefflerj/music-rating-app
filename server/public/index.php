@@ -9,13 +9,14 @@ use MusicRating\Controllers\AuthController;
 use MusicRating\Controllers\ArtistController;
 use MusicRating\Controllers\RelationshipController;
 use MusicRating\Controllers\SongController;
+use MusicRating\Controllers\StarsController;
 use MusicRating\Controllers\UserController;
 use MusicRating\Controllers\WebController;
 use MusicRating\lib\Controller\BaseController;
 use MusicRating\Middlewares\APIMiddleware;
 
-ini_set('display_errors', 'on');
-error_reporting(E_ALL);
+// ini_set('display_errors', 'on');
+// error_reporting(E_ALL);
 
 include_once dirname(__DIR__, 1) . '/src/autoload.php';
 
@@ -80,6 +81,10 @@ $app->put('/v1/artists/{id}', ArtistController::update());
 $app->post('/v1/relationships/albums/addSong', RelationshipController::addSongToAlbum());
 $app->post('/v1/relationships/artists/addSong', RelationshipController::addSongToArtist());
 $app->post('/v1/relationships/artists/addAlbum', RelationshipController::addAlbumToArtist());
+// Relationships group
+StarsController::init();
+$app->get('/v1/stars/songs', StarsController::getAllStarredSongs());
+$app->get('/v1/stars/songs/{id}', StarsController::getStarredSong());
 
 AuthController::init();
 $app->post('/v1/auth/register', AuthController::register());

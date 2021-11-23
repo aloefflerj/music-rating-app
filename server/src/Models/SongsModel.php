@@ -3,16 +3,19 @@
 namespace MusicRating\Models;
 
 use MusicRating\Models\Helpers\DBConnection;
+use MusicRating\Models\Helpers\UsersConnConfig;
 
 class SongsModel extends BaseModel
 {
     use DBConnection;
+    use UsersConnConfig;
 
     private $pdo;
 
     public function __construct()
     {
-        $this->pdo = $this->conn('music_rating_app', 'music_rating_db', 'root', '123#@!');
+        $userConn = $this->getUserConn();
+        $this->pdo = $this->conn($userConn);
     }
 
     /**
