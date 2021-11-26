@@ -267,6 +267,7 @@ INSERT INTO `starred_artists` (`id`, `stars`, `artists`, `users`) VALUES
 -- ||            FUNCTIONS           || ==========================================>
 -- ====================================
 
+-- STARS TEXT FUNCTION -------------------------------------------->
 DROP FUNCTION IF EXISTS StarText;
 
 DELIMITER // 
@@ -287,6 +288,30 @@ BEGIN
 
 END // 
 DELIMITER ;
+-- STARS TEXT FUNCTION -------------------------------------------->
+
+-- AVERAGE TEXT FUNCTION -------------------------------------------->
+DROP FUNCTION IF EXISTS AverageText;
+
+DELIMITER // 
+
+CREATE FUNCTION AverageText(stars INT(5), average FLOAT(4,2)) RETURNS VARCHAR(20)
+DETERMINISTIC
+BEGIN
+  DECLARE avg_text VARCHAR(20);
+
+  IF stars <= 0 OR stars > 5 THEN SET avg_text = '';
+  ELSEIF stars < average THEN SET avg_text = 'Good Reviews';
+  ELSEIF stars = average THEN SET avg_text = 'Average Reviews';
+  ELSEIF stars > average THEN SET avg_text = 'Bad Reviews';
+
+  END IF;
+
+  RETURN (avg_text);
+
+END // 
+DELIMITER ;
+-- AVERAGE TEXT FUNCTION -------------------------------------------->
 
 -- ====================================
 -- ||            PROCEDURES          || ==========================================>
@@ -413,6 +438,7 @@ GRANT SELECT, UPDATE, INSERT ON starred_songs TO 'app';
 GRANT SELECT, UPDATE, INSERT ON starred_albums TO 'app';
 GRANT SELECT, UPDATE, INSERT ON starred_artists TO 'app';
 GRANT EXECUTE ON FUNCTION StarsText TO 'app';
+GRANT EXECUTE ON FUNCTION AverageText TO 'app';
 -- APP USER ---------------------------------------------------------->
 
 -- ADM USER ---------------------------------------------------------->
@@ -429,6 +455,7 @@ GRANT EXECUTE ON PROCEDURE DeleteSong TO 'adm';
 GRANT EXECUTE ON PROCEDURE DeleteAlbum TO 'adm';
 GRANT EXECUTE ON PROCEDURE DeleteArtist TO 'adm';
 GRANT EXECUTE ON FUNCTION StarsText TO 'adm';
+GRANT EXECUTE ON FUNCTION AverageText TO 'adm';
 GRANT SELECT, UPDATE, INSERT ON songs TO 'adm';
 GRANT SELECT, UPDATE, INSERT ON albums TO 'adm';
 GRANT SELECT, UPDATE, INSERT ON artists TO 'adm';

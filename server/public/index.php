@@ -1,6 +1,31 @@
 <?php
+$curl = curl_init();
 
-declare(strict_types=1);
+// to generate data-------------------------->
+// curl_setopt_array($curl, [
+// 	CURLOPT_URL => "https://random-word-api.herokuapp.com/word?number=1000",
+// 	CURLOPT_RETURNTRANSFER => true,
+// 	CURLOPT_FOLLOWLOCATION => true,
+// 	CURLOPT_ENCODING => "",
+// 	CURLOPT_MAXREDIRS => 10,
+// 	CURLOPT_TIMEOUT => 30,
+// 	CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+// 	CURLOPT_CUSTOMREQUEST => "GET",
+// ]);
+
+// $response = curl_exec($curl);
+// $err = curl_error($curl);
+
+// curl_close($curl);
+
+// if ($err) {
+// 	echo "cURL Error #:" . $err;
+// } else {
+// 	echo $response;
+// }
+// die();
+
+// declare(strict_types=1);
 
 session_start();
 
@@ -76,15 +101,17 @@ $app->get('/v1/artists/{id}', ArtistController::get());
 $app->delete('/v1/artists/{id}', ArtistController::delete());
 $app->put('/v1/artists/{id}', ArtistController::update());
 
+// Relationships group
+StarsController::init();
+$app->get('/v1/stars/songs', StarsController::getAllStarredSongs());
+$app->get('/v1/stars/songs/{id}', StarsController::getStarredSong());
+$app->post('/v1/stars/songs', StarsController::starASong());
 
 // Relationships group
 $app->post('/v1/relationships/albums/addSong', RelationshipController::addSongToAlbum());
 $app->post('/v1/relationships/artists/addSong', RelationshipController::addSongToArtist());
 $app->post('/v1/relationships/artists/addAlbum', RelationshipController::addAlbumToArtist());
-// Relationships group
-StarsController::init();
-$app->get('/v1/stars/songs', StarsController::getAllStarredSongs());
-$app->get('/v1/stars/songs/{id}', StarsController::getStarredSong());
+
 
 AuthController::init();
 $app->post('/v1/auth/register', AuthController::register());

@@ -3,12 +3,14 @@
 namespace MusicRating\Models;
 
 use MusicRating\Models\Helpers\DBConnection;
+use MusicRating\Models\Helpers\QueryHelper;
 use MusicRating\Models\Helpers\UsersConnConfig;
 
 class UsersModel
 {
     use DBConnection;
     use UsersConnConfig;
+    use QueryHelper;
 
     private $pdo;
 

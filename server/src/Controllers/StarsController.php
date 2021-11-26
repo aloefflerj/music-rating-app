@@ -48,17 +48,15 @@ class StarsController
         };
     }
 
-    public static function new()
+    public static function starASong()
     {
         return function ($req, $res, $body) {
 
             $body = json_decode($body);
 
-            $stars = self::$stars->getAllStarredSongs(
-                $body->username ?? null,
-                $body->mail ?? null,
-                $body->passwd ?? null,
-                $body->user_type ?? null
+            $stars = self::$stars->starASong(
+                $body->stars ?? null,
+                $body->song ?? null
             );
 
             if (self::$stars->error()) {

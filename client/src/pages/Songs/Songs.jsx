@@ -37,7 +37,6 @@ const Songs = props => {
             content={
                 <>
                 {songs}
-                <Outlet />
                 </>
             }
 
