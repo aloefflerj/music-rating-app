@@ -17,7 +17,7 @@ class RelationshipsModel extends BaseModel
 
     public function __construct()
     {
-        $userConn = $this->getUserConn(true);
+        $userConn = $this->getUserConn();
         $this->pdo = $this->conn($userConn);
 
         /** @var SongsModel */

@@ -14,7 +14,7 @@ class AlbumsModel extends BaseModel
 
     public function __construct()
     {
-        $userConn = $this->getUserConn(true);
+        $userConn = $this->getUserConn();
         $this->pdo = $this->conn($userConn);
     }
 
@@ -25,12 +25,13 @@ class AlbumsModel extends BaseModel
      */
     public function getAll(): ?array
     {
-        $query = $this->pdo->prepare('SELECT * FROM albums');
-
+        
         try {
+            $query = $this->pdo->prepare('SELECT * FROM albums');
             $query->execute();
         } catch (\Exception $e) {
             $this->error = $e;
+            return null;
         }
 
         $albums = $query->fetchAll();
@@ -40,18 +41,20 @@ class AlbumsModel extends BaseModel
 
     public function get(int $id)
     {
-        $query = $this->pdo->prepare('SELECT * FROM albums WHERE id = :id');
-
+        
         try {
+            $query = $this->pdo->prepare('SELECT * FROM albums WHERE id = :id');
             $query->execute(['id' => $id]);
         } catch (\Exception $e) {
             $this->error = $e;
+            return null;
         }
 
         $album = $query->fetch();
 
         if (!$album) {
             $this->error = new \Exception("O album que você procura não existe");
+            return null;
         }
 
         return $album;
@@ -74,14 +77,15 @@ class AlbumsModel extends BaseModel
             'title' => $title
         ];
 
-        $query = $this->pdo->prepare(
-            "INSERT INTO albums (title) VALUES (:title)"
-        );
-
+        
         try {
+            $query = $this->pdo->prepare(
+                "INSERT INTO albums (title) VALUES (:title)"
+            );
             $query->execute($params);
         } catch (\Exception $e) {
             $this->error = $e;
+            return null;
         }
 
 
@@ -110,11 +114,11 @@ class AlbumsModel extends BaseModel
             return null;
         }
 
-        $query = $this->pdo->prepare(
-            "DELETE FROM albums WHERE id = :id"
-        );
-
+        
         try {
+            $query = $this->pdo->prepare(
+                "CALL DeleteAlbum(:id)"
+            );
             $query->execute(['id' => $id]);
         } catch (\Exception $e) {
             $this->error = $e;
@@ -168,12 +172,13 @@ class AlbumsModel extends BaseModel
 
         $sql = "UPDATE albums SET {$sqlSet} WHERE id = :id";
 
-        $sql = $this->pdo->prepare($sql);
-
+        
         try {
+            $sql = $this->pdo->prepare($sql);
             $sql->execute($bodyArr);
         } catch (\Exception $e) {
             $this->error = $e;
+            return null;
         }
 
         return $this->get($id);

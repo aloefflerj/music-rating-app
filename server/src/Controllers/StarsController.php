@@ -83,13 +83,13 @@ class StarsController
         };
     }
 
-    public static function update() 
+    public static function updateSongStars() 
     {
         return function ($req, $res, $body, $param) {
 
             $body = json_decode($body);
 
-            $user = self::$stars->getAllStarredSongs($param->id, $body);
+            $user = self::$stars->updateSongStars((int)$param->id, (int)$body->stars);
 
             if (self::$stars->error()) {
                 self::printError();

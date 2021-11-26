@@ -106,6 +106,7 @@ StarsController::init();
 $app->get('/v1/stars/songs', StarsController::getAllStarredSongs());
 $app->get('/v1/stars/songs/{id}', StarsController::getStarredSong());
 $app->post('/v1/stars/songs', StarsController::starASong());
+$app->put('/v1/stars/songs/{id}', StarsController::updateSongStars());
 
 // Relationships group
 $app->post('/v1/relationships/albums/addSong', RelationshipController::addSongToAlbum());

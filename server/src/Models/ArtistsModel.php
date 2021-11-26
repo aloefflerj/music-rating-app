@@ -14,7 +14,7 @@ class ArtistsModel extends BaseModel
 
     public function __construct()
     {
-        $userConn = $this->getUserConn(true);
+        $userConn = $this->getUserConn();
         $this->pdo = $this->conn($userConn);
     }
 
@@ -31,6 +31,7 @@ class ArtistsModel extends BaseModel
             $query->execute();
         } catch (\Exception $e) {
             $this->error = $e;
+            return null;
         }
 
         $artists = $query->fetchAll();
@@ -46,12 +47,14 @@ class ArtistsModel extends BaseModel
             $query->execute(['id' => $id]);
         } catch (\Exception $e) {
             $this->error = $e;
+            return null;
         }
 
         $artist = $query->fetch();
 
         if (!$artist) {
             $this->error = new \Exception("O artista que você procura não existe");
+            return null;
         }
 
         return $artist;
@@ -82,6 +85,7 @@ class ArtistsModel extends BaseModel
             $query->execute($params);
         } catch (\Exception $e) {
             $this->error = $e;
+            return null;
         }
 
 
@@ -111,13 +115,14 @@ class ArtistsModel extends BaseModel
         }
 
         $query = $this->pdo->prepare(
-            "DELETE FROM artists WHERE id = :id"
+            "CALL DeleteArtist(:id)"
         );
 
         try {
             $query->execute(['id' => $id]);
         } catch (\Exception $e) {
             $this->error = $e;
+            return null;
         }
 
         return $this->getAll();
@@ -170,12 +175,13 @@ class ArtistsModel extends BaseModel
 
         $sql = "UPDATE artists SET {$sqlSet} WHERE id = :id";
 
-        $sql = $this->pdo->prepare($sql);
-
+        
         try {
+            $sql = $this->pdo->prepare($sql);
             $sql->execute($bodyArr);
         } catch (\Exception $e) {
             $this->error = $e;
+            return null;
         }
 
         return $this->get($id);

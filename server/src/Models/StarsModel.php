@@ -60,7 +60,7 @@ class StarsModel extends BaseModel
         // 'SELECT *, StarsText(stars) FROM starred_songs WHERE id = :id'
         $select = "SELECT s.id as id, title, stars, StarsText(stars) AS label  FROM starred_songs ss
                     INNER JOIN songs s
-                    WHERE s.id  = ss.songs AND users = :user AND ss.id = :id";
+                    WHERE s.id  = ss.songs AND users = :user AND s.id = :id";
         
         try {
             $query = $this->pdo->prepare($select);
@@ -126,6 +126,55 @@ class StarsModel extends BaseModel
         }
 
         return $this->getAllStarredSongs();
+
+    }
+
+    public function updateSongStars($song, $stars)
+    {
+        $validatedStars = $this->validateStars($stars);
+        if(!$validatedStars) {
+            return null;
+        }
+
+        $validatedSongId = $this->validateId($song);
+        if(!$validatedSongId) {
+            return null;
+        }
+
+        $user = $_SESSION['user'];
+
+        $update = "UPDATE starred_songs SET stars = :stars WHERE songs = :song AND users = :user";
+
+        try {
+            $sql = $this->pdo->prepare($update);
+            $sql->execute([
+                'stars' => $validatedStars,
+                'song' => $validatedSongId,
+                'user' => $user->id
+            ]);
+        } catch(\PDOException $e) {
+            $this->error = $e;
+            return null;
+        }
+
+        $select = "SELECT s.id as id, title, stars, StarsText(stars) AS label  FROM starred_songs ss
+                    INNER JOIN songs s
+                    WHERE s.id = ss.songs AND users = :user AND s.id = :id";
+
+        try {
+            $sql = $this->pdo->prepare($select);
+            $sql->execute([
+                'id' => $validatedSongId,
+                'user' => $user->id
+            ]);
+        } catch(\PDOException $e) {
+            $this->error = $e;
+            return null;
+        }
+
+        $song = $sql->fetch();
+
+        return $song;
 
     }
 

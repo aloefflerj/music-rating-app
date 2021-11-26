@@ -25,12 +25,13 @@ class SongsModel extends BaseModel
      */
     public function getAll(): ?array
     {
-        $query = $this->pdo->prepare('SELECT * FROM songs');
-
+        
         try {
+            $query = $this->pdo->prepare('SELECT * FROM songs');
             $query->execute();
         } catch (\Exception $e) {
             $this->error = $e;
+            return null;
         }
 
         $songs = $query->fetchAll();
@@ -40,9 +41,9 @@ class SongsModel extends BaseModel
 
     public function get(int $id)
     {
-        $query = $this->pdo->prepare('SELECT * FROM songs WHERE id = :id');
-
+        
         try {
+            $query = $this->pdo->prepare('SELECT * FROM songs WHERE id = :id');
             $query->execute(['id' => $id]);
         } catch (\Exception $e) {
             $this->error = $e;
@@ -86,14 +87,15 @@ class SongsModel extends BaseModel
             'song_order' => $song_order
         ];
 
-        $query = $this->pdo->prepare(
-            "INSERT INTO songs (title, song_order) VALUES (:title, :song_order)"
-        );
-
+        
         try {
+            $query = $this->pdo->prepare(
+                "INSERT INTO songs (title, song_order) VALUES (:title, :song_order)"
+            );
             $query->execute($params);
         } catch (\Exception $e) {
             $this->error = $e;
+            return null;
         }
 
 
@@ -122,14 +124,15 @@ class SongsModel extends BaseModel
             return null;
         }
 
-        $query = $this->pdo->prepare(
-            "DELETE FROM songs WHERE id = :id"
-        );
-
+        
         try {
+            $query = $this->pdo->prepare(
+                "CALL DeleteSong(:id)"
+            );
             $query->execute(['id' => $id]);
         } catch (\Exception $e) {
             $this->error = $e;
+            return null;
         }
 
         return $this->getAll();
@@ -188,9 +191,9 @@ class SongsModel extends BaseModel
 
         $sql = "UPDATE songs SET {$sqlSet} WHERE id = :id";
 
-        $sql = $this->pdo->prepare($sql);
-
+        
         try {
+            $sql = $this->pdo->prepare($sql);
             $sql->execute($bodyArr);
         } catch (\Exception $e) {
             $this->error = $e;
