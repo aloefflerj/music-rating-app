@@ -31,6 +31,8 @@ services:
       - "3306:3306"
     volumes: 
       - ./dump.sql:/docker-entrypoint-initdb.d/dump.sql
+      - ./backup:/backup
+      - ./backup/log:/var/log
     networks:
       - music_rating_network
   music_rating_client:

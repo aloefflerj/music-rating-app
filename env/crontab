@@ -1,0 +1,1 @@
+30 3 * * * mysqldump -u root -p123#@! music_rating_app > /backup/backup_`date +\%d_\%m_\%Y-\%H_\%M`.sql
