@@ -77,11 +77,11 @@ class ArtistsModel extends BaseModel
             'name' => $name
         ];
 
-        $query = $this->pdo->prepare(
-            "INSERT INTO artists (name) VALUES (:name)"
-        );
-
+        
         try {
+            $query = $this->pdo->prepare(
+                "INSERT INTO artists (name) VALUES (:name)"
+            );
             $query->execute($params);
         } catch (\Exception $e) {
             $this->error = $e;

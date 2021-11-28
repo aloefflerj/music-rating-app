@@ -1,5 +1,5 @@
 <?php
-$curl = curl_init();
+// $curl = curl_init();
 
 // to generate data-------------------------->
 // curl_setopt_array($curl, [
@@ -32,6 +32,7 @@ session_start();
 use MusicRating\Controllers\AlbumController;
 use MusicRating\Controllers\AuthController;
 use MusicRating\Controllers\ArtistController;
+use MusicRating\Controllers\DataLoaderController;
 use MusicRating\Controllers\RelationshipController;
 use MusicRating\Controllers\SongController;
 use MusicRating\Controllers\StarsController;
@@ -119,6 +120,9 @@ $app->post('/v1/auth/register', AuthController::register());
 $app->post('/v1/auth/login', AuthController::login());
 $app->get('/v1/auth/logged', AuthController::logged());
 $app->post('/v1/auth/logout', AuthController::logout());
+
+DataLoaderController::init();
+$app->post('/v1/data-loader/populateDb', DataLoaderController::populateDb());
 
 
 // Test group ---------------->
