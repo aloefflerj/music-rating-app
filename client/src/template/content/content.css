@@ -20,7 +20,7 @@ main.content .fa-music {
     width: 200px;
 }
 
-main.content .songs {
+main.content .songs, .albums {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -33,12 +33,12 @@ main.content h3 {
     margin-top: 20px;
 }
 
-main.content .songs a {
+main.content .songs a, .albums a {
     text-decoration: none;
     color: #333;
 }
 
-main.content .songs a:hover {
+main.content .songs a:hover, .albums a:hover {
     text-decoration: underline;
     font-weight: bolder;
 }

@@ -313,6 +313,27 @@ END //
 DELIMITER ;
 -- AVERAGE TEXT FUNCTION -------------------------------------------->
 
+-- ALBUM NUMBER OF SONGS FUNCTION -------------------------------------------->
+DROP FUNCTION IF EXISTS NumberOfSongsInAlbum;
+
+DELIMITER // 
+
+CREATE FUNCTION NumberOfSongsInAlbum(songs INT(3)) RETURNS VARCHAR(50)
+DETERMINISTIC
+BEGIN
+  DECLARE number_of_songs_text VARCHAR(50);
+
+  IF songs > 0 THEN SET number_of_songs_text = '';
+  ELSEIF songs = 0 THEN SET number_of_songs_text = 'No songs have been added to this album ';
+
+  END IF;
+
+  RETURN (number_of_songs_text);
+
+END // 
+DELIMITER ;
+-- ALBUM NUMBER OF SONGS FUNCTION -------------------------------------------->
+
 -- ====================================
 -- ||            PROCEDURES          || ==========================================>
 -- ====================================
@@ -439,6 +460,7 @@ GRANT SELECT, UPDATE, INSERT ON starred_albums TO 'app';
 GRANT SELECT, UPDATE, INSERT ON starred_artists TO 'app';
 GRANT EXECUTE ON FUNCTION StarsText TO 'app';
 GRANT EXECUTE ON FUNCTION AverageText TO 'app';
+GRANT EXECUTE ON FUNCTION NumberOfSongsInAlbum TO 'app';
 -- APP USER ---------------------------------------------------------->
 
 -- ADM USER ---------------------------------------------------------->
@@ -456,6 +478,7 @@ GRANT EXECUTE ON PROCEDURE DeleteAlbum TO 'adm';
 GRANT EXECUTE ON PROCEDURE DeleteArtist TO 'adm';
 GRANT EXECUTE ON FUNCTION StarsText TO 'adm';
 GRANT EXECUTE ON FUNCTION AverageText TO 'adm';
+GRANT EXECUTE ON FUNCTION NumberOfSongsInAlbum TO 'adm';
 GRANT SELECT, UPDATE, INSERT ON songs TO 'adm';
 GRANT SELECT, UPDATE, INSERT ON albums TO 'adm';
 GRANT SELECT, UPDATE, INSERT ON artists TO 'adm';

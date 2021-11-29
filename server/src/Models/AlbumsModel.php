@@ -184,6 +184,28 @@ class AlbumsModel extends BaseModel
         return $this->get($id);
     }
 
+    public function hasMusic($id)
+    {
+
+        $validatedId = $this->validateId($id);
+        if(!$validatedId) {
+            return null;
+        }
+        
+        $select = "SELECT NumberOfSongsInAlbum(COUNT(songs)) as has_songs FROM albums_songs WHERE albums = :albumId";
+
+        try {
+            $sql = $this->pdo->prepare($select);
+            $sql->execute(['albumId' => $id]);
+            $hasMusic = $sql->fetch();
+        }catch (\PDOException $e) {
+            $this->error = $e;
+            return null;
+        }
+
+        return $hasMusic;
+    }
+
     /*
      * =============
      * || HELPERS || =============================================>

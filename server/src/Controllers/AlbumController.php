@@ -98,6 +98,22 @@ class AlbumController
         };
     }
 
+
+    public static function hasMusic()
+    {
+        return function ($req, $res, $param) {
+
+            $hasMusic = self::$albums->hasMusic($param->id);
+
+            if (self::$albums->error()) {
+                self::printError();
+                return;
+            }
+
+            echo json_encode($hasMusic, JSON_PRETTY_PRINT);
+        };
+    }
+
     private static function printError()
     {
         echo json_encode([

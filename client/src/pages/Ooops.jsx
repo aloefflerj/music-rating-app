@@ -12,7 +12,9 @@ const Ooops = props => {
                 <Link to='/login'>
                     <Button color='white'><FontAwesomeIcon icon={faUser} />&nbsp;Login</Button>
                 </Link>
-            } />
+            } 
+            logged={props.logged}
+            />
     )
 }
 

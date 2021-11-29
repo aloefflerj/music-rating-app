@@ -9,6 +9,8 @@ import { register, login, logout, logged } from './routes/authRoutes'
 import Register from './pages/Register'
 import Songs from './pages/Songs/Songs'
 import Song from './pages/Songs/Song'
+import Albums from './pages/Albums/Albums'
+import Album from './pages/Albums/Album'
 
 class App extends Component {
     constructor(props) {
@@ -45,7 +47,6 @@ class App extends Component {
             return
         }
         window.location.replace('http://localhost/login')
-        // window.location.reload(false)
     }
 
     handleLoginSubmit = async data => {
@@ -55,7 +56,6 @@ class App extends Component {
             alert(loginResponse.msg)
             return
         }
-        // window.location.reload(false)
         window.location.replace('http://localhost/')
     }
     
@@ -63,52 +63,13 @@ class App extends Component {
         const res = logout()
         const logoutResponse = (await res).data
         window.location.replace('http://localhost/login')
-        // window.location.reload(false)
     }
 
     PrivateRoute({children}) {
         return logged ? children : <Navigate replace to='login' />
     }
-    // filter = (value, filter) => {
-    //     if(value === ''){
-    //         this.init()
-    //     }
-    //     const users = []
-    //     this.state.users.map(user => {
-    //         for (var property in user) {
-    //             if (property === filter) {
-    //                 const parsedUserValue = this.normalizeString(user[property])
-    //                 const parsedInput = this.normalizeString(value)
-    //                 if (parsedUserValue.match(parsedInput)) {
-    //                     users.push(user)
-    //                 }
-    //             }
-    //         }
-    //     })
-    //     this.setState({
-    //         users: users
-    //     })
-    // }
-
-    // normalizeString(str) {
-    //     const lowerCase = str ? str.toLowerCase() : ''
-    //     const parsed = lowerCase.normalize('NFD').replace(/[\u0300-\u036f]/g, '')
-    //     return parsed
-    // }
 
     render() {
-
-        // if(!this.state.logged) {
-        //     return (
-        //         <div className='AppLogin'>
-        //             <Routes>
-        //                 <Route path='/login' element={<Login loginSubmit={this.handleLoginSubmit}/>} />
-        //                 <Route path='/register' element={<Register registerSubmit={this.handleRegisterSubmit}/>} />
-        //                 <Route path='*' element={<Navigate replace to='/login' />} />
-        //             </Routes>
-        //         </div>
-        //     )
-        // }
 
         return (
             <div className={this.state.logged ? 'App' : 'AppLogin'}>
@@ -126,10 +87,16 @@ class App extends Component {
                                     <Songs handleLogout={this.handleLogout} logged={this.state.logged}/>
                             </this.PrivateRoute>
                             } 
-                        >
-                        </Route>
+                        />
+                        <Route path='/albums' element={
+                            <this.PrivateRoute>
+                                    <Albums handleLogout={this.handleLogout} logged={this.state.logged}/>
+                            </this.PrivateRoute>
+                            } 
+                        />
                         <Route path='/songs/:songId' element={<Song logged={this.state.logged} />} />
-                        <Route path='*' element={<Ooops />} />
+                        <Route path='/albums/:albumId' element={<Album logged={this.state.logged} />} />
+                        <Route path='*' element={<Ooops logged={this.state.logged} />} />
                 </Routes>
             </div>
         )

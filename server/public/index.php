@@ -93,6 +93,7 @@ $app->get('/v1/albums/{id}', AlbumController::get());
 $app->delete('/v1/albums/{id}', AlbumController::delete());
 $app->put('/v1/albums/{id}', AlbumController::update());
 $app->get('/v1/albums/filter/artist/{id}', RelationshipController::getAllAlbumsFromArtist());
+$app->get('/v1/albums/hasMusic/{id}', AlbumController::hasMusic());
 
 // Artists group ---------------->
 ArtistController::init();
@@ -102,7 +103,7 @@ $app->get('/v1/artists/{id}', ArtistController::get());
 $app->delete('/v1/artists/{id}', ArtistController::delete());
 $app->put('/v1/artists/{id}', ArtistController::update());
 
-// Relationships group
+// Stars group
 StarsController::init();
 $app->get('/v1/stars/songs', StarsController::getAllStarredSongs());
 $app->get('/v1/stars/songs/{id}', StarsController::getStarredSong());

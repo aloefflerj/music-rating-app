@@ -1,37 +1,38 @@
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router'
-import { getSong as getSongApi } from '../../routes/songRoutes'
+import { getAlbum as getAlbumApi } from '../../routes/albumRoutes'
 import Page from '../../template/Page'
 import { Rating } from 'react-simple-star-rating'
 
-const Song = props => {
+const Album = props => {
     let params = useParams()
 
-    const [song, setSong] = useState({})
+    const [album, setAlbum] = useState({})
 
     const [rating, setRating] = useState(0)
 
     useEffect(() => {
-        getSong()
+        getAlbum()
     }, [])
 
-    const getSong = async () => {
-        const res = getSongApi(params.songId)
-        const songResponse = (await res).data
-        setSong(songResponse)
+    const getAlbum = async () => {
+        const res = getAlbumApi(params.albumId)
+        const albumResponse = (await res).data
+
+        setAlbum(albumResponse)
     }
 
     const handleRating = (rate) => {
         setRating(rate)
     }
 
-    const renderSongContent = () => {
-        if (song && Object.keys(song).length > 0 && !song.msg) {
-
+    const renderAlbumContent = () => {
+        // props.logged ??
+        if (album && Object.keys(album).length > 0 && !album.msg) {
             return (
                 <>
-                    <img src='https://picsum.photos/200/200' alt={`${song.title}-image`} />
-                    <h3>{song.title}</h3>
+                    <img src='https://picsum.photos/200/200' alt={`${album.title}-image`} />
+                    <h3>{album.title}</h3>
                     <p className='stars-label' >Great</p>
                     <div className='stars'>
                         <Rating onClick={handleRating} ratingValue={rating} />
@@ -39,7 +40,7 @@ const Song = props => {
                 </>
             )
         } else {
-            return <p>{song.success ? '...' : <h3>{song.msg}</h3>}</p>
+            return <p>{album.success ? '...' : <h3>{album.msg}</h3>}</p>
         }
     }
 
@@ -47,9 +48,9 @@ const Song = props => {
         <Page handleLogout={props.handleLogout}
             logged={props.logged}
             // subHeader={song ? song.title : 'A música que procura não existe'} 
-            content={renderSongContent()}
+            content={renderAlbumContent()}
         />
     )
 }
 
-export default Song
+export default Album
