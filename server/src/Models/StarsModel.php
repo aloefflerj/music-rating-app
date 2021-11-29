@@ -81,7 +81,7 @@ class StarsModel extends BaseModel
     public function starASong($stars, $song) {
         
         $validatedStars = $this->validateStars($stars);
-        if(!$validatedStars) {
+        if(!$validatedStars && $validatedStars !== 0) {
             return null;
         }
         
@@ -141,6 +141,7 @@ class StarsModel extends BaseModel
             return null;
         }
 
+
         $user = $_SESSION['user'];
 
         $update = "UPDATE starred_songs SET stars = :stars WHERE songs = :song AND users = :user";
@@ -188,7 +189,8 @@ class StarsModel extends BaseModel
 
      private function validateStars($stars) 
      {
-        if(empty($stars) || !filter_var($stars, FILTER_VALIDATE_INT) || $stars < 1 || $stars > 5) {
+
+        if(($stars !== 0 && empty($stars)) || (!filter_var($stars, FILTER_VALIDATE_INT) && $stars !== 0) || $stars < 0 || $stars > 5) {
             $this->error = new \Exception('Adicione uma pontuação válida');
             return false;
         }

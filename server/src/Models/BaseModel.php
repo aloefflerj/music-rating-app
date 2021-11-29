@@ -20,7 +20,7 @@ class BaseModel
             return false;
         }
 
-        return true;
+        return $id;
     }
 
     public function error()
