@@ -27,7 +27,7 @@ class SongsModel extends BaseModel
     {
         
         try {
-            $query = $this->pdo->prepare('SELECT * FROM songs');
+            $query = $this->pdo->prepare('SELECT id, title FROM songs');
             $query->execute();
         } catch (\Exception $e) {
             $this->error = $e;
@@ -43,7 +43,7 @@ class SongsModel extends BaseModel
     {
         
         try {
-            $query = $this->pdo->prepare('SELECT * FROM songs WHERE id = :id');
+            $query = $this->pdo->prepare('SELECT id, title FROM songs WHERE id = :id');
             $query->execute(['id' => $id]);
         } catch (\Exception $e) {
             $this->error = $e;

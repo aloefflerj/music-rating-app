@@ -2,32 +2,31 @@ DROP DATABASE IF EXISTS `music_rating_app`;
 
 CREATE DATABASE IF NOT EXISTS `music_rating_app`;
 
+
 USE `music_rating_app`;
 
 DROP TABLE IF EXISTS `users`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+
+SET GLOBAL tmp_table_size = 208003028;
+
 CREATE TABLE `users` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `username` varchar(40) NOT NULL,
   `mail` varchar(70) NOT NULL,
   `passwd` char(255) NOT NULL,
-  `user_type` varchar(20) NOT NULL,
+  `user_type` char(3) NOT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=70 DEFAULT CHARSET=utf8mb4;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
-LOCK TABLES `users` WRITE;
-/*!40000 ALTER TABLE `users` DISABLE KEYS */;
 INSERT INTO `users` (`id`, `username`, `mail`, `passwd`, `user_type`) VALUES 
   (1, 'app', 'regular_user@rating-songs.com', '$2y$10$cUu05b2DVdRj/oWp/fMNgOIzMLg.ciI0QAOQmFWs/Ms1pBl.sNNgG', 'app'),
   (2, 'adm', 'adm@rating-songs.com', '$2y$10$cUu05b2DVdRj/oWp/fMNgOIzMLg.ciI0QAOQmFWs/Ms1pBl.sNNgG', 'adm'),
   (3, 'dba', 'dba@rating-songs.com', '$2y$10$cUu05b2DVdRj/oWp/fMNgOIzMLg.ciI0QAOQmFWs/Ms1pBl.sNNgG', 'dba');
-/*!40000 ALTER TABLE `users` ENABLE KEYS */;
-UNLOCK TABLES;
 
+
+ALTER TABLE `users` ADD INDEX (`username`, `created_at`, `updated_at`);
 
 /* SONGS ------------------------------------------------> */
 DROP TABLE IF EXISTS `songs`;
@@ -39,7 +38,7 @@ CREATE TABLE IF NOT EXISTS `songs` (
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-);
+) ENGINE=InnoDB AUTO_INCREMENT=70 DEFAULT CHARSET=utf8mb4;
 
 INSERT INTO `songs` (`id`, `title`, `song_order`) VALUES 
   (1, 'The King of Carrot Flowers, Pt. One', 1),
@@ -78,7 +77,7 @@ CREATE TABLE IF NOT EXISTS `albums` (
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-);
+) ENGINE=InnoDB AUTO_INCREMENT=70 DEFAULT CHARSET=utf8mb4;
 
 INSERT INTO `albums` (`id`, `title`, `img`) VALUES 
   (1, 'In the Aeroplane Over the Sea', 'in-the-aeroplane-over-the-sea.jpg'),
@@ -95,7 +94,7 @@ CREATE TABLE IF NOT EXISTS `artists` (
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-);
+) ENGINE=InnoDB AUTO_INCREMENT=70 DEFAULT CHARSET=utf8mb4;
 
 INSERT INTO `artists` (`id`, `name`, `img`) VALUES 
   (1, 'Neutral Milk Hotel', 'neutral-milk-hotel.jpg'),
@@ -114,7 +113,7 @@ CREATE TABLE IF NOT EXISTS `artists_songs` (
   PRIMARY KEY (`id`),
   FOREIGN KEY (`artists`) REFERENCES `artists` (`id`),
   FOREIGN KEY (`songs`) REFERENCES `songs` (`id`)
-);
+) ENGINE=InnoDB AUTO_INCREMENT=70 DEFAULT CHARSET=utf8mb4;
 
 INSERT INTO `artists_songs` (`id`, `artists`, `songs`) VALUES 
   (1, 1, 1),
@@ -154,7 +153,7 @@ CREATE TABLE IF NOT EXISTS `artists_albums` (
   PRIMARY KEY (`id`),
   FOREIGN KEY (`artists`) REFERENCES `artists` (`id`),
   FOREIGN KEY (`albums`) REFERENCES `albums` (`id`)
-);
+) ENGINE=InnoDB AUTO_INCREMENT=70 DEFAULT CHARSET=utf8mb4;
 
 INSERT INTO `artists_albums` (`id`, `artists`, `albums`) VALUES
   (1, 1, 1),
@@ -173,7 +172,7 @@ CREATE TABLE IF NOT EXISTS `albums_songs` (
   PRIMARY KEY (`id`),
   FOREIGN KEY (`albums`) REFERENCES `albums` (`id`),
   FOREIGN KEY (`songs`) REFERENCES `songs` (`id`)
-);
+) ENGINE=InnoDB AUTO_INCREMENT=70 DEFAULT CHARSET=utf8mb4;
 
 INSERT INTO `albums_songs` (`id`, `albums`, `songs`) VALUES 
   (1, 1, 1),
@@ -213,7 +212,7 @@ CREATE TABLE IF NOT EXISTS `starred_songs` (
   PRIMARY KEY (`id`),
   FOREIGN KEY (`songs`) REFERENCES `songs` (`id`),
   FOREIGN KEY (`users`) REFERENCES `users` (`id`)
-);
+) ENGINE=InnoDB AUTO_INCREMENT=70 DEFAULT CHARSET=utf8mb4;
 
 INSERT INTO `starred_songs` (`id`, `stars`, `songs`, `users`) VALUES
   (1, 4, 1, 1),
@@ -237,7 +236,7 @@ CREATE TABLE IF NOT EXISTS `starred_albums` (
   PRIMARY KEY (`id`),
   FOREIGN KEY (`albums`) REFERENCES `albums` (`id`),
   FOREIGN KEY (`users`) REFERENCES `users` (`id`)
-);
+) ENGINE=InnoDB AUTO_INCREMENT=70 DEFAULT CHARSET=utf8mb4;
 
 INSERT INTO `starred_albums` (`id`, `stars`, `albums`, `users`) VALUES
   (1, 5, 1, 1),
@@ -256,7 +255,7 @@ CREATE TABLE IF NOT EXISTS `starred_artists` (
   PRIMARY KEY (`id`),
   FOREIGN KEY (`artists`) REFERENCES `artists` (`id`),
   FOREIGN KEY (`users`) REFERENCES `users` (`id`)
-);
+) ENGINE=InnoDB AUTO_INCREMENT=70 DEFAULT CHARSET=utf8mb4;
 
 INSERT INTO `starred_artists` (`id`, `stars`, `artists`, `users`) VALUES
   (1, 5, 1, 1),

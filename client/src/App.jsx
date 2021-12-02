@@ -94,9 +94,9 @@ class App extends Component {
                             </this.PrivateRoute>
                             } 
                         />
-                        <Route path='/songs/:songId' element={<Song logged={this.state.logged} />} />
-                        <Route path='/albums/:albumId' element={<Album logged={this.state.logged} />} />
-                        <Route path='*' element={<Ooops logged={this.state.logged} />} />
+                        <Route path='/songs/:songId' element={<Song logged={this.state.logged} handleLogout={this.handleLogout} />} />
+                        <Route path='/albums/:albumId' element={<Album logged={this.state.logged} handleLogout={this.handleLogout} />} />
+                        <Route path='*' element={<Ooops logged={this.state.logged} handleLogout={this.handleLogout} />} />
                 </Routes>
             </div>
         )

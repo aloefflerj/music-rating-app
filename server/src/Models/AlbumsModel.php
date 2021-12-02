@@ -27,7 +27,7 @@ class AlbumsModel extends BaseModel
     {
         
         try {
-            $query = $this->pdo->prepare('SELECT * FROM albums');
+            $query = $this->pdo->prepare('SELECT id, title FROM albums');
             $query->execute();
         } catch (\Exception $e) {
             $this->error = $e;
@@ -43,7 +43,7 @@ class AlbumsModel extends BaseModel
     {
         
         try {
-            $query = $this->pdo->prepare('SELECT * FROM albums WHERE id = :id');
+            $query = $this->pdo->prepare('SELECT id, title FROM albums WHERE id = :id');
             $query->execute(['id' => $id]);
         } catch (\Exception $e) {
             $this->error = $e;

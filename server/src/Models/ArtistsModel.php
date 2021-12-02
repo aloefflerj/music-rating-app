@@ -25,7 +25,7 @@ class ArtistsModel extends BaseModel
      */
     public function getAll(): ?array
     {
-        $query = $this->pdo->prepare('SELECT * FROM artists');
+        $query = $this->pdo->prepare('SELECT id, name FROM artists');
 
         try {
             $query->execute();
@@ -41,7 +41,7 @@ class ArtistsModel extends BaseModel
 
     public function get(int $id)
     {
-        $query = $this->pdo->prepare('SELECT * FROM artists WHERE id = :id');
+        $query = $this->pdo->prepare('SELECT id, name FROM artists WHERE id = :id');
 
         try {
             $query->execute(['id' => $id]);

@@ -158,7 +158,7 @@ class RelationshipsModel extends BaseModel
 
         // Validação de ocorrência
         $query = $this->pdo->prepare(
-            'SELECT * FROM albums_songs WHERE songs = :songId AND albums = :albumId'
+            'SELECT id, albums, songs FROM albums_songs WHERE songs = :songId AND albums = :albumId'
         );
         
         try {
@@ -190,7 +190,7 @@ class RelationshipsModel extends BaseModel
             return null;
         }
 
-        $query = $this->pdo->prepare('SELECT * FROM albums WHERE id = :albumId');
+        $query = $this->pdo->prepare('SELECT id, title FROM albums WHERE id = :albumId');
 
         try {
             $query->execute(['albumId' => $albumId]);
@@ -244,7 +244,7 @@ class RelationshipsModel extends BaseModel
 
         // Validação de ocorrência
         $query = $this->pdo->prepare(
-            'SELECT * FROM artists_songs WHERE songs = :songId AND artists = :artistId'
+            'SELECT id, artists, songs FROM artists_songs WHERE songs = :songId AND artists = :artistId'
         );
         
         try {
@@ -276,7 +276,7 @@ class RelationshipsModel extends BaseModel
             return null;
         }
 
-        $query = $this->pdo->prepare('SELECT * FROM artists WHERE id = :artistId');
+        $query = $this->pdo->prepare('SELECT id, name FROM artists WHERE id = :artistId');
 
         try {
             $query->execute(['artistId' => $artistId]);
@@ -330,7 +330,7 @@ class RelationshipsModel extends BaseModel
 
         // Validação de ocorrência
         $query = $this->pdo->prepare(
-            'SELECT * FROM artists_albums WHERE albums = :albumId AND artists = :artistId'
+            'SELECT id, artists, albums FROM artists_albums WHERE albums = :albumId AND artists = :artistId'
         );
         
         try {
@@ -362,7 +362,7 @@ class RelationshipsModel extends BaseModel
             return null;
         }
 
-        $query = $this->pdo->prepare('SELECT * FROM artists WHERE id = :artistId');
+        $query = $this->pdo->prepare('SELECT id, name FROM artists WHERE id = :artistId');
 
         try {
             $query->execute(['artistId' => $artistId]);

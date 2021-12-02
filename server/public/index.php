@@ -55,7 +55,6 @@ APIMiddleware::apply();
  * ||              WEB               || ==================================>
  * ====================================
  */
-WebController::init();
 $app->get('/', WebController::home());
 
 
